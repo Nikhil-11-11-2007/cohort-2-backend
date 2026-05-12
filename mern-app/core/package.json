@@ -1,0 +1,11 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
