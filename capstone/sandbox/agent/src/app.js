@@ -109,7 +109,6 @@ app.get("/read-files", async (req, res) => {
         files: results
     })
 
-
 });
 
 /**
