@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 
-app.get("/api/ai/healthz", (req, res) => {
+app.get("/api/status/healthz", (req, res) => {
     res.status(200).json({
         message: "AI Orchestration API is healthy!",
         status: "success"
