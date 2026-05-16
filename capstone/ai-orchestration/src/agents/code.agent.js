@@ -1,32 +1,25 @@
-import dotenv from "dotenv";
-
-dotenv.config();
-
+import "dotenv/config";
 import { ChatMistralAI } from "@langchain/mistralai";
 import { createAgent } from "langchain";
 
-import {
-listFiles,
-readFiles,
-updateFiles,
-} from "./tools.js";
+import { listFiles, readFiles, updateFiles } from "./tools.js";
 
 const model = new ChatMistralAI({
-model: "mistral-medium-latest",
-apiKey: process.env.MISTRALAI_API_KEY,
-temperature: 0,
+  model: "mistral-medium-latest",
+  apiKey: process.env.MISTRALAI_API_KEY,
+  temperature: 0,
 });
 
 const agent = createAgent({
-model,
+  model,
 
-tools: [
-listFiles,
-readFiles,
-updateFiles,
-],
+  tools: [
+    listFiles,
+    readFiles,
+    updateFiles,
+  ],
 
-systemPrompt: `
+  systemPrompt: `
 You are an AI coding agent working inside a sandboxed Vite React workspace.
 
 RULES:
@@ -43,16 +36,16 @@ RULES:
   `,
 
   verbose: true,
-  });
+});
 
 try {
 
-const response = await agent.invoke(
-{
-messages: [
-{
-role: "user",
-content: `
+  const response = await agent.invoke(
+    {
+      messages: [
+        {
+          role: "user",
+          content: `
 Create a clean normal basic landing page inside the existing Vite React project.
 
 Requirements:
@@ -68,28 +61,30 @@ Workflow:
 3. Update existing files only
 4. Stop after updating
    `,
-   },
-   ],
-   },
+        },
+      ],
+    },
 
-   // IMPORTANT
-   {
-   recursionLimit: 10,
-   }
-   );
+    // IMPORTANT
+    {
+      recursionLimit: 10,
+    }
+  );
 
-console.log("=================================");
-console.log("FINAL AGENT RESPONSE");
-console.log("=================================");
+  console.log("=================================");
+  console.log("FINAL AGENT RESPONSE");
+  console.log("=================================");
 
-console.dir(response, { depth: null });
+  console.dir(response, { depth: null });
 
 } catch (error) {
 
-console.log("=================================");
-console.log("AGENT ERROR");
-console.log("=================================");
+  console.log("=================================");
+  console.log("AGENT ERROR");
+  console.log("=================================");
 
-console.error(error);
+  console.error(error);
 
 }
+
+export default agent;

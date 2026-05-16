@@ -10,7 +10,7 @@ export const listFiles = tool(
         console.log("using list files tool")
         console.log("=================================")
 
-        const response = await axios.get("http://019e3010-696c-709e-959f-57d50fe39e2b.agent.localhost/list-files")
+        const response = await axios.get("http://sandbox-service-019e310e-b53c-7469-aeab-7f0f58256d6b:3000/list-files")
 
         console.log("=================================")
         console.log("response from list files tool", response.data)
@@ -31,7 +31,7 @@ export const readFiles = tool(
         console.log("using read file tool with files", files)
         console.log("=================================")
 
-        const response = await axios.get("http://019e3010-696c-709e-959f-57d50fe39e2b.agent.localhost/read-files?files=" + files.join(","))
+        const response = await axios.get("http://sandbox-service-019e310e-b53c-7469-aeab-7f0f58256d6b:3000/read-files?files=" + files.join(","))
 
         console.log("=================================")
         console.log("response from read file tool", response.data)
@@ -55,7 +55,7 @@ export const updateFiles = tool(
         console.log("using update file tool with files", files)
         console.log("=================================")
 
-        const response = await axios.patch("http://019e3010-696c-709e-959f-57d50fe39e2b.agent.localhost/update-files", {
+        const response = await axios.patch("http://sandbox-service-019e310e-b53c-7469-aeab-7f0f58256d6b:3000/update-files", {
             updates: files
         })
 
