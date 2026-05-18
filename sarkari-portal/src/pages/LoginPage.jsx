@@ -23,8 +23,18 @@ export default function LoginPage() {
 
   const validate = () => {
     const e = {}
-    if (!userId.trim()) e.userId = 'User ID is required (Aadhaar / PAN / Voter ID / Passport / Ration Card)'
-    if (!password) e.password = 'Password is required'
+    if (!userId.trim()) {
+      e.userId = 'User ID is required (Aadhaar / PAN / Voter ID / Passport / Ration Card)'
+    } else if (userId.trim().length < 8) {
+      e.userId = 'User ID must be at least 8 characters long.'
+    }
+    
+    if (!password) {
+      e.password = 'Password is required'
+    } else if (password.length < 8) {
+      e.password = 'Password must be at least 8 characters long.'
+    }
+    
     if (captchaInput !== captcha.answer) e.captcha = `Wrong answer. The answer is not "${captchaInput}". Seriously? Try harder.`
     return e
   }
@@ -42,12 +52,14 @@ export default function LoginPage() {
 
   const handleOtpSubmit = () => {
     if (!otp) { setErrors({ otp: 'OTP is required. Check your 2009 phone number.' }); return }
-    // UX CRIME: OTP always wrong first time
-    if (otp !== '000000') {
-      setErrors({ otp: `OTP "${otp}" is incorrect. Please check the OTP sent to your registered mobile number ending in ****. (Hint: it was sent in 2019)` })
+    const validOTPs = ['000000', '99999', '123456']
+    if (!validOTPs.includes(otp)) {
+      setErrors({ otp: `OTP "${otp}" is incorrect. Please check the OTP sent to your registered mobile number ending in ****. (Hint: 000000, 99999, 123456)` })
       return
     }
-    navigate('/apply')
+    localStorage.setItem('isAuthenticated', 'true')
+    window.dispatchEvent(new Event('auth-change'))
+    navigate('/')
   }
 
   if (showOtpScreen) {
@@ -70,7 +82,7 @@ export default function LoginPage() {
             <FormField
               id="otp-input" label="Enter 6-Digit OTP" type="text"
               value={otp} onChange={e => { setOtp(e.target.value); setErrors({}) }}
-              placeholder="Enter OTP (Hint: 000000)" error={errors.otp}
+              placeholder="Enter OTP (Hint: 000000, 99999, 123456)" error={errors.otp}
             />
             <p className="text-gray-300" style={{ fontSize: '6px', fontFamily: 'Comic Sans MS' }}>
               Did not receive OTP? Click Resend after 300 seconds. Resend limit: 0 per day. Contact helpdesk at 3:00 AM.
@@ -121,13 +133,15 @@ export default function LoginPage() {
             id="userId"
             label="User ID (Aadhaar / PAN / Voter ID / Passport No. / Ration Card No. / Employee ID / Any Govt ID)"
             value={userId} onChange={e => { setUserId(e.target.value); setErrors(er => ({ ...er, userId: undefined })) }}
-            placeholder="Enter any of 47 accepted ID types" error={errors.userId}
+            placeholder="Enter any of 47 accepted ID types (Min 8 chars)" error={errors.userId}
+            hint="Minimum length: 8 characters"
           />
 
           <FormField
             id="login-password" label="Password" type="password"
             value={password} onChange={e => { setPassword(e.target.value); setErrors(er => ({ ...er, password: undefined })) }}
-            placeholder="Your 47-character emoji password" error={errors.password}
+            placeholder="Your 47-character emoji password (Min 8 chars)" error={errors.password}
+            hint="Minimum length: 8 characters"
           />
 
           {/* CAPTCHA */}

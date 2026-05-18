@@ -12,7 +12,7 @@ export default function SessionTimer() {
 
   return (
     <div
-      className="fixed top-10 right-2 z-[9999] bg-red-700 text-white px-2 py-1 border-2 border-yellow-400 animate-pulse text-xs"
+      className="fixed top-23 left-2 z-[9999] bg-red-700 text-white px-2 py-1 border-2 border-yellow-400 animate-pulse text-xs"
       style={{ fontFamily: 'Courier New, monospace' }}
     >
       ⏱ SESSION EXPIRES: {count}s

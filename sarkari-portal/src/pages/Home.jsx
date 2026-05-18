@@ -1,5 +1,7 @@
 import { useNavigate, Link } from 'react-router-dom'
 import usePageTransition from '../hooks/usePageTransition'
+import Nav from '../components/Nav'
+import VirusPopup from '../components/VirusPopup'
 
 const ROUTES = ['/', '/apply', '/captcha', '/confirm', '/success']
 function randomRoute(current) {
@@ -33,24 +35,13 @@ export default function Home() {
 
   return (
     <div ref={pageRef} className="min-h-screen">
-      {/* NAV BAR */}
-      <nav className="bg-[#003087] text-white px-4 py-2 flex flex-wrap items-center gap-4 border-b-4 border-[#FF6600] relative z-40">
-        <div className="flex items-center gap-2 mr-auto">
-          <span className="text-3xl">🏛️</span>
-          <div>
-            <div className="font-black uppercase tracking-widest text-yellow-300 text-sm" style={{ fontFamily: 'Impact' }}>GOVSEWA PORTAL</div>
-            <div className="text-[10px] text-gray-300" style={{ fontFamily: 'Courier New' }}>भारत सरकार | Government of India | Est. 1947</div>
-          </div>
-        </div>
-        {/* UX CRIME: Home → /apply, About → loops to /, random redirects */}
-        <button onClick={() => handleNav('/apply')} className="text-yellow-300 hover:text-white text-sm uppercase tracking-widest hover:underline" style={{ fontFamily: 'Impact' }}>Home</button>
-        <button onClick={() => handleNav('/')} className="text-yellow-300 hover:text-white text-sm uppercase tracking-widest hover:underline" style={{ fontFamily: 'Impact' }}>About</button>
-        <button onClick={() => handleNav('/apply')} className="text-yellow-300 hover:text-white text-sm uppercase tracking-widest hover:underline" style={{ fontFamily: 'Impact' }}>Services</button>
-        <button onClick={() => handleNav('/login')} className="text-yellow-300 hover:text-white text-sm uppercase tracking-widest hover:underline" style={{ fontFamily: 'Impact' }}>Login</button>
-        <button onClick={() => handleNav('/signup')} className="text-yellow-300 hover:text-white text-sm uppercase tracking-widest hover:underline" style={{ fontFamily: 'Impact' }}>Register</button>
-        <button onClick={() => handleNav('/')} className="text-yellow-300 hover:text-white text-sm uppercase tracking-widest hover:underline" style={{ fontFamily: 'Impact' }}>Contact</button>
-        <button onClick={() => handleNav('/apply')} className="text-yellow-300 hover:text-white text-sm uppercase tracking-widest hover:underline" style={{ fontFamily: 'Impact' }}>Help</button>
-      </nav>
+      <VirusPopup delayMs={3000} />
+      <VirusPopup delayMs={8000} />
+      <VirusPopup delayMs={13000} />
+      <VirusPopup delayMs={19000} />
+      <VirusPopup delayMs={24000} />
+      <VirusPopup delayMs={29000} />
+      <Nav />
 
       {/* HERO SECTION */}
       <div className="bg-gradient-to-b from-[#003087] to-[#004aad] text-white py-8 px-4 text-center border-b-8 border-[#FF6600]">

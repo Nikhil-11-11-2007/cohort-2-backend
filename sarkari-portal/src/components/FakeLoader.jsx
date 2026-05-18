@@ -8,7 +8,7 @@ const CYCLE_MESSAGES = [
   ['Final verification...', 'Generating application token...', 'Submitting to department...', 'Please wait, do not refresh...'],
 ]
 
-export default function FakeLoader({ nextRoute }) {
+export default function FakeLoader({ nextRoute, onComplete }) {
   const barRef = useRef(null)
   const [cycle, setCycle] = useState(0)
   const [msg, setMsg] = useState('Initializing portal...')
@@ -19,7 +19,8 @@ export default function FakeLoader({ nextRoute }) {
     if (cycle >= 3) {
       if (!doneRef.current) {
         doneRef.current = true
-        navigate(nextRoute)
+        if (onComplete) onComplete()
+        if (nextRoute) navigate(nextRoute)
       }
       return
     }

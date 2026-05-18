@@ -95,13 +95,11 @@ export default function ApplyForm() {
   const [pwErrors, setPwErrors] = useState([])
   const [fieldErrors, setFieldErrors] = useState({})
 
-  // UX CRIME: 30% chance field clears on blur — kept only here, not on keypress
-  const makeBlurHandler = (setter, fieldKey) => () => {
-    if (Math.random() < 0.3) {
-      setter('')
-      setFieldErrors(e => ({ ...e, [fieldKey]: 'Field auto-cleared for security. Please re-enter.' }))
+  const makeBlurHandler = (setter, fieldKey) => (e) => {
+    if (!e.target.value.trim()) {
+      setFieldErrors(er => ({ ...er, [fieldKey]: 'This field is required.' }))
     } else {
-      setFieldErrors(e => ({ ...e, [fieldKey]: undefined }))
+      setFieldErrors(er => ({ ...er, [fieldKey]: undefined }))
     }
   }
 
@@ -114,7 +112,11 @@ export default function ApplyForm() {
 
   return (
     <div ref={pageRef} className="min-h-screen bg-[#f0ede0] py-6 px-2 sm:px-4">
-      <VirusPopup />
+      <VirusPopup delayMs={3000} />
+      <VirusPopup delayMs={8000} />
+      <VirusPopup delayMs={13000} />
+      <VirusPopup delayMs={19000} />
+      <VirusPopup delayMs={24000} />
 
       <div className="max-w-3xl mx-auto">
         {/* HEADER */}

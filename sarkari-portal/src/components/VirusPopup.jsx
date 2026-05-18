@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 
-export default function VirusPopup() {
+export default function VirusPopup({ delayMs }) {
   const [visible, setVisible] = useState(false)
   const popupRef = useRef(null)
   const posRef = useRef({ top: '30%', left: '25%' })
 
   useEffect(() => {
-    const delay = 6000 + Math.random() * 6000
+    const delay = delayMs !== undefined ? delayMs : 6000 + Math.random() * 6000
     const t = setTimeout(() => {
       posRef.current = {
         top: `${15 + Math.random() * 40}%`,
