@@ -5,13 +5,17 @@ const AgentRouter = Router();
 
 AgentRouter.post("/invoke", async (req, res) => {
     try {
-        const { message } = req.body;
+        const { message, projectId } = req.body;
 
         const response = await agent.invoke({
             messages: [{
                 role: "user",
                 content: message
             }]
+        },{
+            context: {
+                projectId
+            }
         });
         res.json({
             success: true,

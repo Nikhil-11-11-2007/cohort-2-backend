@@ -4,17 +4,9 @@ import * as z from "zod"
 
 
 export const listFiles = tool(
-    async ({ }) => {
+    async ({ }, config) => {
 
-        console.log("=================================")
-        console.log("using list files tool")
-        console.log("=================================")
-
-        const response = await axios.get("http://sandbox-service-019e3f92-d1aa-74a3-b797-74d8d303215a:3000/list-files")
-
-        console.log("=================================")
-        console.log("response from list files tool", response.data)
-        console.log("=================================")
+        const response = await axios.get(`http://sandbox-service-${config.context.projectId}:3000/list-files`)
 
         return JSON.stringify(response.data.files)
     },
@@ -26,16 +18,9 @@ export const listFiles = tool(
 )
 
 export const readFiles = tool(
-    async ({ files: [] }) => {
-        console.log("=================================")
-        console.log("using read file tool with files", files)
-        console.log("=================================")
+    async ({ files = [] }, config) => {
 
-        const response = await axios.get("http://sandbox-service-019e3f92-d1aa-74a3-b797-74d8d303215a:3000/read-files?files=" + files.join(","))
-
-        console.log("=================================")
-        console.log("response from read file tool", response.data)
-        console.log("=================================")
+        const response = await axios.get(`http://sandbox-service-${config.context.projectId}:3000/read-files?files=` + files.join(","))
 
         return JSON.stringify(response.data)
     },
@@ -49,13 +34,9 @@ export const readFiles = tool(
 )
 
 export const updateFiles = tool(
-    async ({files}) => {
+    async ({files}, config) => {
 
-        console.log("=================================")
-        console.log("using update file tool with files", files)
-        console.log("=================================")
-
-        const response = await axios.patch("http://sandbox-service-019e3f92-d1aa-74a3-b797-74d8d303215a:3000/update-files", {
+        const response = await axios.patch(`http://sandbox-service-${config.context.projectId}:3000/update-files`, {
             updates: files
         })
 
