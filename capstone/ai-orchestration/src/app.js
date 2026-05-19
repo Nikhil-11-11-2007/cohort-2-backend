@@ -9,7 +9,11 @@ app.use(express.json());
 app.use((req, res, next) => {
     console.log("REQUEST RECEIVED");
     console.log(req.method, req.url);
-    console.log(req.body);
+
+    if (Object.keys(req.body || {}).length > 0) {
+        console.log(req.body);
+    }
+
     next();
 });
 
