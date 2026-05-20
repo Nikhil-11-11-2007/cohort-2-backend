@@ -4,20 +4,9 @@ import AgentRouter from './routes/agent.routes.js';
 
 const app = express();
 
+app.use(morgan('dev'));
 app.use(express.json());
 
-app.use((req, res, next) => {
-    console.log("REQUEST RECEIVED");
-    console.log(req.method, req.url);
-
-    if (Object.keys(req.body || {}).length > 0) {
-        console.log(req.body);
-    }
-
-    next();
-});
-
-app.use(morgan('dev'));
 
 
 app.get("/api/status/healthz", (req, res) => {
