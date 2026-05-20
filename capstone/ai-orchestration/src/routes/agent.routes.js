@@ -7,7 +7,7 @@ AgentRouter.post("/invoke", async (req, res) => {
     try {
         const { message, projectId } = req.body;
 
-        const response = await agent.invoke({
+        const response = await agent.stream({
             messages: [{
                 role: "user",
                 content: message
@@ -15,8 +15,14 @@ AgentRouter.post("/invoke", async (req, res) => {
         },{
             context: {
                 projectId
-            }
+            },
+            streamMode: "custom"
         });
+
+        for await (const chunk of response) {
+            console.log(chunk)
+        }
+
         res.json({
             success: true,
             response,
