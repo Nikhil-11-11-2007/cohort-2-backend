@@ -1,7 +1,7 @@
-import app from "./src/app.js";
+import httpServer from "./src/app.js";
 
 
 
-app.listen(3000, () => {
+httpServer.listen(3000, "0.0.0.0", () => {
     console.log("Agent server is running on port 3000");
 })
