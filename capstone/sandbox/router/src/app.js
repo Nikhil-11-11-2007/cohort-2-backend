@@ -1,6 +1,7 @@
 import express from "express"
 import { createProxyMiddleware } from "http-proxy-middleware"
 import morgan from "morgan"
+import http from "http"
 
 const app = express();
 app.use(morgan("combined")); // Log incoming requests
@@ -59,7 +60,26 @@ app.use((req, res, next) => {
         return getproxy(sandboxId)(req, res, next);
     }
 
-
 })
 
-export default app
+const server = http.createServer(app);
+
+server.on("upgrade", (req, socket, head) => {
+    const host = req.headers.host;
+    const sandboxId = host.split(".")[0]; // Extract sandbox ID from subdomain
+    const type = host.split(".")[1]; // Extract type (agent or preview) from subdomain
+
+    console.log(`Received upgrade request for sandbox ${sandboxId} of type ${type}`);
+
+    if (type === 'agent') {
+        const proxy = getAgentProxy(sandboxId);
+        proxy.upgrade(req, socket, head);
+    } else if (type === 'preview') {
+        const proxy = getproxy(sandboxId);
+        proxy.upgrade(req, socket, head);
+    } else {
+        socket.destroy(); // Close the connection if the type is unknown
+    }
+});
+
+export default server;

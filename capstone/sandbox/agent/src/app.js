@@ -39,7 +39,7 @@ const shell = process.env.SHELL || 'bash';
 const ptyProcess = pty.spawn(shell, [], {
     name: 'xterm-color',
     cols: 80,
-    rows: 24,
+    rows: 30,
     cwd: "/workspace",
     env: process.env
 });
