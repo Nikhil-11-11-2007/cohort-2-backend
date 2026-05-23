@@ -13,7 +13,9 @@ AgentRouter.post("/invoke", async (req, res) => {
             "Connection": "keep-alive",
         });
 
-        const response = await agent.stream(
+        const writer = (text) => res.write(text)
+
+        await agent.stream(
             {
                 messages: [{
                     role: "user",
@@ -22,26 +24,21 @@ AgentRouter.post("/invoke", async (req, res) => {
             },
             {
                 context: {
-                    projectId
+                    projectId,
+                    writer
                 },
                 streamMode: "custom"
             });
 
-        for await (const chunk of response) {
-            console.log(chunk)
-            res.write(`data: ${chunk}\n\n`);
-        }
+        // for await (const chunk of response) {
+        //     console.log(chunk)
+        //     res.write(`data: ${chunk}\n\n`);
+        // }
 
-        res.json({
-            success: true,
-            response,
-        });
+        res.end();
     } catch (error) {
-        console.error("Error invoking agent:", error);
-        res.status(500).json({
-            success: false,
-            error: error.message,
-        });
+        if (res.headersSent) { res.end(); }
+        else { res.status(500).json({ error: "Failed to invoke agent" }); }
     }
 })
 

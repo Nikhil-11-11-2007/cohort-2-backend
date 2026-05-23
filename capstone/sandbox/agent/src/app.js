@@ -2,10 +2,11 @@ import express from 'express';
 import morgan from 'morgan';
 import fs from 'fs';
 import path from 'path';
-import {Server} from "socket.io";
+import { Server } from "socket.io";
 import http from 'http';
 import pty from 'node-pty';
 import os from 'os';
+import cors from 'cors';
 
 
 const WORKING_DIR = "/workspace";
@@ -14,6 +15,8 @@ const app = express();
 const httpServer = http.createServer(app);
 
 app.use(morgan('dev'));
+
+app.use(cors({ origin: "*", methods: ["GET", "POST", "PATCH", "DELETE"] }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,11 +47,11 @@ const ptyProcess = pty.spawn(shell, [], {
     env: process.env
 });
 
-ptyProcess.on('data', function(data) {
+ptyProcess.on('data', function (data) {
     io.emit('terminal-output', data);
 });
 
-ptyProcess.on('exit', function(exitCode, signal) {
+ptyProcess.on('exit', function (exitCode, signal) {
     console.log(`Shell process exited with code ${exitCode} and signal ${signal}`);
 });
 

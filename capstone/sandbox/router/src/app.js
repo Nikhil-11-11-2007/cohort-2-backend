@@ -26,7 +26,6 @@ function getproxy(sandboxId) {
         proxies[sandboxId] = createProxyMiddleware({
             target,
             changeOrigin: true,
-            ws: true, // Enable WebSocket proxying
         })
     }
 
@@ -41,7 +40,6 @@ function getAgentProxy(sandboxId) {
         agentProxies[sandboxId] = createProxyMiddleware({
             target,
             changeOrigin: true,
-            ws: true, // Enable WebSocket proxying
         })
     }
 
