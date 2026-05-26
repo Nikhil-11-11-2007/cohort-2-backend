@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
         required: [true, "email is required"]
     },
     password: {
-        type: String
+        type: String,
+        select: false
     },
     refreshToken: {
         type: String
