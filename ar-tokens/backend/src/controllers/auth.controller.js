@@ -1,4 +1,4 @@
-const { registerService, loginService } = require("../services/auth.service")
+const { registerService, loginService, getAccessTokenService } = require("../services/auth.service")
 
 const registerController = async (req, res) => {
 
@@ -52,10 +52,36 @@ const loginController = async (req, res) => {
             email: isExisted.email,
             createdAt: isExisted.createdAt,
             updatedAt: isExisted.updatedAt,
-            __v: isExisted.__v
+            __v: isExisted.__v,
+            refreshToken: isExisted.refreshToken
         }
     })
 
 }
 
-module.exports = { registerController, loginController }
+const getAccessTokenController = async (req,res) => {
+
+    const refreshToken = req.cookies.refreshToken
+
+    if(!refreshToken) {
+        return res.status(401).json({
+            message: "Unauthorized request"
+        })
+    }
+
+    const accessToken = await getAccessTokenService(refreshToken)
+
+    res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+        maxAge: 20 * 60 * 1000
+    })
+
+    return res.status(200).json({
+        message: "AccessToken generated"
+    })
+
+}
+
+module.exports = { registerController, loginController, getAccessTokenController }

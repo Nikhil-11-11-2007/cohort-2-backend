@@ -1,5 +1,6 @@
 const UserModel = require("../models/user.model")
 const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 const { generateAccessToken, generateRefreshToken } = require("../utils/generateTokens")
 
 const registerService = async (data) => {
@@ -8,18 +9,12 @@ const registerService = async (data) => {
         const { name, email, password } = data
 
         if (!email || !password) {
-            return res.status(400).json({
-                message: "All fields are required"
-            })
+            throw new Error("all fields are required")
         }
 
         const isExisted = await UserModel.findOne({ email })
 
-        if (isExisted) {
-            return res.status(409).json({
-                message: "User already exists with this email"
-            })
-        }
+        if (isExisted) throw new Error("User already exists with this email");
 
         const hashPass = bcrypt.hashSync(password, 10)
 
@@ -29,6 +24,9 @@ const registerService = async (data) => {
 
         const accessToken = generateAccessToken(newUser._id)
         const refreshToken = generateRefreshToken(newUser._id)
+
+        newUser.refreshToken = refreshToken
+        await newUser.save()
 
         return {
             accessToken,
@@ -62,7 +60,7 @@ const loginService = async (data) => {
 
         const hashPass = await bcrypt.compare(password, isExisted.password)
 
-        if(!hashPass) {
+        if (!hashPass) {
             return res.status(401).json({
                 message: "Invalid credentials"
             })
@@ -70,6 +68,9 @@ const loginService = async (data) => {
 
         const accessToken = generateAccessToken(isExisted._id)
         const refreshToken = generateRefreshToken(isExisted._id)
+
+        isExisted.refreshToken = refreshToken
+        await isExisted.save()
 
         return {
             accessToken,
@@ -82,4 +83,21 @@ const loginService = async (data) => {
     }
 }
 
-module.exports = { registerService, loginService }
+const getAccessTokenService = async (refreshToken) => {
+
+    let decode = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+
+    if (!decode) throw new Error("unauthorized");
+
+    const user = await UserModel.findById(decode.id)
+
+    if (refreshToken !== user.refreshToken) {
+        throw new Error("unauthorized");
+    }
+
+    const accessToken = generateAccessToken(user._id)
+
+    return accessToken
+}
+
+module.exports = { registerService, loginService, getAccessTokenService }
