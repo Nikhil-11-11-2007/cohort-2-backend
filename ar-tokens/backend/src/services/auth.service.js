@@ -45,25 +45,19 @@ const loginService = async (data) => {
         const { email, password } = data
 
         if (!email || !password) {
-            return res.status(400).json({
-                message: "All fields are required"
-            })
+            throw new Error("All fields are required");
         }
 
         const isExisted = await UserModel.findOne({ email }).select("+password")
 
         if (!isExisted) {
-            return res.status(404).json({
-                message: "User not found"
-            })
+            throw new Error("User not found");
         }
 
         const hashPass = await bcrypt.compare(password, isExisted.password)
 
         if (!hashPass) {
-            return res.status(401).json({
-                message: "Invalid credentials"
-            })
+            throw new Error("Invalid credentials");
         }
 
         const accessToken = generateAccessToken(isExisted._id)
