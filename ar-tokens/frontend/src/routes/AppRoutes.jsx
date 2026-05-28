@@ -9,9 +9,11 @@ import Public from './protected/Public'
 import Protected from './protected/Protected'
 import { axiosInstance } from '../config/axiosInstance'
 import { useDispatch } from 'react-redux'
-import { addUser } from '../state/authReducer'
+import { addUser, removeUser } from '../state/authReducer'
 
 const AppRoutes = () => {
+
+    console.log("appRoutes")
 
     const dispatch = useDispatch()
 
@@ -20,10 +22,9 @@ const AppRoutes = () => {
             try {
 
                 const res = await axiosInstance.get("/api/auth/me")
-                console.log(res);
-                dispatch(addUser(res?.data?.user))
-
+                dispatch(addUser(res?.data?.user))  
             } catch (error) {
+                dispatch(removeUser())
                 console.log("error in me api", error)
             }
         })()

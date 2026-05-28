@@ -34,7 +34,7 @@ const loginController = async (req, res) => {
         httpOnly: true,
         sameSite: "lax",
         secure: false,
-        maxAge: 20 * 60 * 1000
+        maxAge: 60 * 1000
     })
 
     res.cookie("refreshToken", refreshToken, {
@@ -59,11 +59,11 @@ const loginController = async (req, res) => {
 
 }
 
-const getAccessTokenController = async (req,res) => {
+const getAccessTokenController = async (req, res) => {
 
     const refreshToken = req.cookies.refreshToken
 
-    if(!refreshToken) {
+    if (!refreshToken) {
         return res.status(401).json({
             message: "Unauthorized request"
         })
