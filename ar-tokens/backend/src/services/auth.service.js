@@ -79,19 +79,27 @@ const loginService = async (data) => {
 
 const getAccessTokenService = async (refreshToken) => {
 
-    let decode = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+    try {
 
-    if (!decode) throw new Error("unauthorized");
+        let decode = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
 
-    const user = await UserModel.findById(decode.id)
+        if (!decode) throw new Error("unauthorized");
 
-    if (refreshToken !== user.refreshToken) {
-        throw new Error("unauthorized");
+        const user = await UserModel.findById(decode.id)
+
+        if (!user) throw new Error("User not foun")
+
+        if (refreshToken !== user.refreshToken) {
+            throw new Error("unauthorized");
+        }
+
+        const accessToken = generateAccessToken(user._id)
+
+        return accessToken
+
+    } catch (error) {
+        throw new Error("Invalid or expired refresh token");
     }
-
-    const accessToken = generateAccessToken(user._id)
-
-    return accessToken
 }
 
 module.exports = { registerService, loginService, getAccessTokenService }

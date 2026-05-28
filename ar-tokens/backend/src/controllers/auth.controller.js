@@ -34,6 +34,7 @@ const loginController = async (req, res) => {
         httpOnly: true,
         sameSite: "lax",
         secure: false,
+        path: "/",
         maxAge: 60 * 1000
     })
 
@@ -61,27 +62,37 @@ const loginController = async (req, res) => {
 
 const getAccessTokenController = async (req, res) => {
 
-    const refreshToken = req.cookies.refreshToken
+    try {
 
-    if (!refreshToken) {
+        const refreshToken = req.cookies.refreshToken
+
+        if (!refreshToken) {
+            return res.status(401).json({
+                message: "Unauthorized request"
+            })
+        }
+
+        const accessToken =
+            await getAccessTokenService(refreshToken)
+
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: false,
+            path: "/",
+            maxAge: 20 * 60 * 1000
+        })
+
+        return res.status(200).json({
+            message: "AccessToken generated"
+        })
+
+    } catch (error) {
+
         return res.status(401).json({
-            message: "Unauthorized request"
+            message: error.message
         })
     }
-
-    const accessToken = await getAccessTokenService(refreshToken)
-
-    res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        maxAge: 20 * 60 * 1000
-    })
-
-    return res.status(200).json({
-        message: "AccessToken generated"
-    })
-
 }
 
 module.exports = { registerController, loginController, getAccessTokenController }

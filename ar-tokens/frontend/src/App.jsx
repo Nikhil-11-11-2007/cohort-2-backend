@@ -5,7 +5,6 @@ const App = () => {
 
   const getData = async () => {
     try {
-      
       const res = await axiosInstance.get("/products")
       console.log("this is UI app.jsx",res)
     } catch (error) {

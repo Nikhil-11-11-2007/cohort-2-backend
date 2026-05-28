@@ -4,13 +4,13 @@ export const authSlice = createSlice({
     name: "auth",
     initialState: {
         user: null,
-        isLoading: true
+        isLoading: true // true  krne pr loadin pr atak rha hai and false mai jb user logi hota hai to reload krne pr login page show hota hai 1 ya 1 milisec ke liye
     },
 
     reducers: {
         addUser: (state, action) => {
             state.user = action.payload
-            state.isLoading = false // true  krne pr loadin pr atak rha hai and false mai jb user logi hota hai to reload krne pr login page show hota hai 1 ya 1 milisec ke liye
+            state.isLoading = false 
         },
         removeUser: (state) => {
             state.user = null
