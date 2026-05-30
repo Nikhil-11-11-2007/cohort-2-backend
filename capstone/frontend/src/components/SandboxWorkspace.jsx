@@ -49,6 +49,7 @@ export default function SandboxWorkspace({ sandbox }) {
         style={{ background: 'var(--bg-panel)', borderColor: 'var(--border)' }}
       >
         {/* Logo */}
+        
         <div className="flex items-center gap-2 shrink-0">
           <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center"
             style={{ background: 'linear-gradient(135deg, #7c6aff, #a78bfa)' }}>
