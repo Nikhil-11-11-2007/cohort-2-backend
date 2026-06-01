@@ -1,6 +1,5 @@
 "use client";
 import { api } from "@/lib/api";
-import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const Auth = createContext()
@@ -10,14 +9,17 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true)
 
     const hydrateUser = async () => {
-
         try {
             const res = await api.get("/api/auth/me")
-            console.log(res)
+
+            console.log("ME SUCCESS:", res.data)
+
             setUser(res.data.user)
         } catch (error) {
+            console.log("ME ERROR:", error.response?.data)
+            console.log("ME STATUS:", error.response?.status)
+
             setUser(null)
-            console.log("error in hydration", error)
         } finally {
             setLoading(false)
         }

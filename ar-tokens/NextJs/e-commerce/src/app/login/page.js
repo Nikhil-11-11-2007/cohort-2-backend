@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,10 +9,19 @@ import { api } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/authContext";
 
+
 const page = () => {
 
+    const { setUser, user, loading } = useAuth()
     const router = useRouter()
     const [formData, setFormData] = useState({})
+
+    useEffect(() => {
+        if (!loading && user) {
+            router.replace("/layout/home")
+        }
+    }, [user, loading, router])
+
 
     // console.log(formData)
 
@@ -29,6 +38,7 @@ const page = () => {
         try {
 
             const res = await api.post("/api/auth/login", formData)
+            setUser(res.data.data)
             router.push("/layout/home")
 
         } catch (error) {

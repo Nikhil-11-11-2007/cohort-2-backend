@@ -1,19 +1,14 @@
-import Navbar from '@/components/Navbar'
-import React from 'react'
+import Navbar from "@/components/Navbar";
 
 const layout = ({ children }) => {
     return (
-        <html
-            suppressHydrationWarning
-            lang="en"
-            className={`h-full antialiased`}
-        >
-            <body className="h-screen gap-5 flex flex-col">
-                <Navbar />
+        <div className="h-screen flex flex-col gap-5">
+            <Navbar />
+            <main className="flex-1">
                 {children}
-            </body>
-        </html>
-    )
-}
+            </main>
+        </div>
+    );
+};
 
-export default layout
+export default layout;
