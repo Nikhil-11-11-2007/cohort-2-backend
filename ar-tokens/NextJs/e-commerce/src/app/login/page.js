@@ -6,9 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/authContext";
 
 const page = () => {
 
+    const router = useRouter()
     const [formData, setFormData] = useState({})
 
     // console.log(formData)
@@ -26,8 +29,8 @@ const page = () => {
         try {
 
             const res = await api.post("/api/auth/login", formData)
-            console.log(res)
-            
+            router.push("/layout/home")
+
         } catch (error) {
             console.log("error in login", error)
         }
