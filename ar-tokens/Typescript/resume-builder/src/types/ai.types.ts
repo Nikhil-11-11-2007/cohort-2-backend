@@ -22,3 +22,8 @@ export interface GenerateExperienceDescriptionBody {
     jobRole: string;
 
 }
+
+export interface ImproveContentBody {
+    content: string;
+
+}
