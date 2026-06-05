@@ -35,7 +35,7 @@ export interface IEducation {
 
 export interface IResume {
     _id?: string;
-    user_id: Types.ObjectId;
+    user_id: string | Types.ObjectId;
     title: string;
     summary: string;
     personalInfo: IPersonalInfo;
