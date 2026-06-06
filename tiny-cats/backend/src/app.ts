@@ -1,6 +1,11 @@
 import express, { type Request, type Response } from "express";
+import catRoutes from "./routes/cat.routes.ts"
+import aiRoutes from "./routes/ai.routes.ts"
+import aiRecommend from "./routes/aiRecommend.routes.ts"
 
 const app = express()
+
+app.use(express.json())
 
 app.get("/", (req: Request, res: Response) => {
     res.send({
@@ -9,6 +14,8 @@ app.get("/", (req: Request, res: Response) => {
     })
 })
 
-// "dev": "nodemon --watch src --ext ts --exec \"node --loader ts-node/esm\" src/server.ts"
+app.use("/api/cats", catRoutes)
+app.use("/api/ai",aiRoutes)
+app.use("/api/aiRecommend", aiRecommend)
 
 export default app
