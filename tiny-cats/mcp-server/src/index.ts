@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { recommendCatsTool } from "./tools/recommendCats.tool.ts";
+import { getAllCatsTool, recommendCatsTool } from "./tools/recommendCats.tool.ts";
 
 const NWS_API_BASE = "https://api.weather.gov";
 const USER_AGENT = "weather-app/1.0";
@@ -34,6 +34,26 @@ server.registerTool("recommend_cats",
     }
   }
 );
+
+server.registerTool("get_all_cats",
+  {
+    title: "all_cats",
+    description: "cats data",
+  },
+  async () => {
+    const result = await getAllCatsTool()
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(result)
+        }
+      ]
+    }
+  }
+);
+
 
 const transporter = new StdioServerTransport();
 
