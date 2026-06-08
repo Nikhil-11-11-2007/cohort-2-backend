@@ -9,12 +9,11 @@ export const personalInfoSchema = z.object({
 
     location: z.string(),
 
-    github: z.string().optional(),
+    github: z.string(),
 
-    linkedIn: z.string().optional(),
+    linkedIn: z.string(),
 
-    portfolio: z.string().optional(),
+    portfolio: z.string(),
 });
 
-export type PersonalInfoFormData =
-    z.infer<typeof personalInfoSchema>;
+export type PersonalInfoFormData = z.infer<typeof personalInfoSchema>;

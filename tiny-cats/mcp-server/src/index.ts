@@ -3,9 +3,6 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { getAllCatsTool, recommendCatsTool } from "./tools/recommendCats.tool.ts";
 
-const NWS_API_BASE = "https://api.weather.gov";
-const USER_AGENT = "weather-app/1.0";
-
 // Create server instance
 const server = new McpServer({
   name: "tiny-cats",

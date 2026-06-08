@@ -3,9 +3,7 @@ import { getMcpClient } from "../services/mcp.service.ts"
 import { generateAiResponse } from "../services/gemini.service.ts";
 
 export const testMcpController = async (req: Request, res: Response) => {
-
     const client = await getMcpClient()
-
     const tools = await client.listTools();
 
     const result = await client.callTool({
@@ -30,13 +28,10 @@ export const testMcpController = async (req: Request, res: Response) => {
     recommend best cats from this data
 
     `
-
     const aiResponse = await generateAiResponse(prompt)
-
 
     return res.json({
         success: true,
         data: aiResponse
     })
-
 }
