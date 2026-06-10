@@ -46,19 +46,19 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ re
 
         const { resumeId } = await params;
 
-        const updatedResume = await ResumeModel.findByIdAndUpdate(
+        const updatedResume = await ResumeModel.findOneAndUpdate(
             {
                 _id: resumeId,
-                user_id: user.userId
+                user_id: user.userId,
             },
             {
                 $set: body,
             },
             {
                 new: true,
-                runValidators: true
+                runValidators: true,
             }
-        )
+        );
 
         if (!updatedResume) {
             return NextResponse.json<ApiResponse>({
