@@ -1,15 +1,35 @@
 *{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
 body{
-  background-color: #111;
+  background:#111;
+}
+
+.marquee{
+  width:100%;
+  overflow:hidden;
+}
+
+.track{
+  display:flex;
+  gap:20px;
+  width:max-content;
 }
 
 .box{
-  height: 300px;
-  width: 300px;
-  background-color: darkred;
+  height:300px;
+  width:300px;
+  background:darkred;
+  /* flex-shrink:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center; */
+}
+
+.box h1{
+  color:white;
 }
