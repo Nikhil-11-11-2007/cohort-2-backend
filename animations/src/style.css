@@ -6,71 +6,87 @@
 
 body {
   background-color: #111;
-  overflow: hidden;
+  /* overflow: hidden; */
   color: white;
 }
 
-
-.loader {
+.page {
   height: 100vh;
   width: 100%;
-  background-color: #111111;
-  position: fixed;
+}
+
+.page1,.page3{
   display: flex;
   align-items: center;
   justify-content: center;
-  top: 0;
-  z-index: 200;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 3rem;
 }
 
-.loader-count h1 {
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: 300;
-  font-size: 5rem;
+.box,
+.box1,
+.box2,
+.box3 {
+  height: 130px;
+  width: 140px;
+  margin-bottom: 1rem;
 }
 
-.background {
-  height: 100vh;
-  position: absolute;
-  z-index: -1;
+.page2{
+  /* background-color: rgb(1, 84, 1); */
+  position: relative;
+}
+
+.content{
+  height: 100%;
   width: 100%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  /* gap: 37rem; */
 }
 
-.background img {
+.content h1{
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-weight: 400;
+  font-size: 7.5rem;
+}
+
+.imageDiv {
+  height: 100%;
+  width: 100%;
+  transform-origin: center;
+}
+
+img {
   height: 100%;
   width: 100%;
   object-fit: cover;
 }
 
-.overlayText {
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-top: 3rem;
+/* .box {
+  background: darkred;
+} */
+/*
+.box1 {
+  background: rgb(0, 104, 139);
 }
 
-.heading {
-  overflow: hidden;
+.box2 {
+  background: rgb(139, 0, 127);
 }
 
-.heading h1 {
-  font-family: Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  font-size: 5rem;
-  text-transform: capitalize;
-  font-weight: 400;
-  word-spacing: .2rem;
+.box3 {
+  background: rgb(74, 139, 0);
 }
 
-.subheading {
-  overflow: hidden;
+button {
+  font-size: 1.5rem;
+  padding: .5rem 1rem;
 }
 
-.subheading h2 {
-  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  font-size: 1.06rem;
-  text-transform: capitalize;
-  font-weight: 100;
-}
+button:active {
+  scale: 0.95;
+} */
