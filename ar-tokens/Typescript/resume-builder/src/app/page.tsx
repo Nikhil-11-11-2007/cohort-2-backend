@@ -1,11 +1,25 @@
-import React from 'react'
+import Link from "next/link";
 
-type Props = {}
-
-function page({}: Props) {
+export default function HomePage() {
   return (
-    <div>this is my main app page</div>
-  )
-}
+    <main className="min-h-screen flex flex-col justify-center items-center gap-5">
+      <h1 className="text-5xl font-bold">
+        ATS Resume Builder
+      </h1>
 
-export default page
+      <Link
+        href="/auth/login"
+        className="bg-blue-600 px-5 py-3 rounded text-white"
+      >
+        Login
+      </Link>
+
+      <Link
+        href="/auth/register"
+        className="bg-green-600 px-5 py-3 rounded text-white"
+      >
+        Register
+      </Link>
+    </main>
+  );
+}

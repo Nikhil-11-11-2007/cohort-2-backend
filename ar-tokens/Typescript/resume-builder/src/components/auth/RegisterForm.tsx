@@ -15,6 +15,7 @@ import {
     setAuthLoading,
     setAuthError,
 } from "@/redux/slices/authSlice";
+import { useAppSelector } from "@/hooks/useAppSelector";
 
 type RegisterFormData = {
     name: string;
@@ -26,6 +27,7 @@ type RegisterFormData = {
 export default function RegisterForm() {
     const router = useRouter();
     const dispatch = useAppDispatch();
+    const error = useAppSelector((state) => state.auth.error)
 
     const {
         register,
@@ -145,6 +147,11 @@ export default function RegisterForm() {
                     {errors.password && (
                         <p className="text-red-500 text-sm mt-1">
                             {errors.password.message}
+                        </p>
+                    )}
+                    {error && (
+                        <p className="text-red-500 text-sm text-center">
+                            {error}
                         </p>
                     )}
                 </div>
