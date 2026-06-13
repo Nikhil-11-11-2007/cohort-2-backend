@@ -1,104 +1,68 @@
 import './style.css'
 import gsap from 'gsap'
+import { Draggable } from 'gsap/Draggable';
+import InertiaPlugin from 'gsap/InertiaPlugin';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from 'gsap/SplitText';
 
-gsap.registerPlugin(ScrollTrigger);
 
-/**
- * time control
- */
+gsap.registerPlugin(ScrollTrigger, SplitText, Draggable, InertiaPlugin);
 
-// const play = document.querySelector(".play")
-// const pause = document.querySelector(".pause")
-// const restart = document.querySelector(".restart")
-// const reverse = document.querySelector(".reverse")
-// const seek = document.querySelector(".seek")
 
-// const tl = gsap.timeline({ paused: true })
+Draggable.create(".box", {
+  bounds: "#app",
+  type: "x,y",
+  edgeResistance: 0.5,
+  inertia: true,
+  dragResistance: 0.2,
+  
 
-// tl.to(".box", {
-//   x: 500,
+})
+
+// splitText 
+
+// const split = new SplitText('.title h1', {
+//   type: "chars,words,lines", // ye to fir kr hi rha hai
+//   // type: "words" ye bhi work krega
+//   wordsClass: "titleWords",
+//   charsClass: "titleChars"
+// })
+
+// gsap.from(split.chars,{
+//   yPercent: 100,
+//   opacity: 0,
 //   duration: 1,
-//   ease: "power4.out",
-//   delay: 0.7,
-// })
-//   .to(".box1", {
-//     x: 500,
-//     duration: 1,
-//     ease: "power4.out",
-//   }, "nik").addLabel("box1")
-//   .to(".box2", {
-//     x: 500,
-//     duration: 1,
-//     ease: "power4.out",
-//   }, "nik-=0.1")
-//   .to(".box3", {
-//     x: 500,
-//     duration: 1,
-//     ease: "power4.out",
-//   })
-
-
-// play.addEventListener("click", () => {
-//   tl.play()
+//   ease: "expo.out",
+//   stagger: {
+//     each: 0.02,
+//     from: "center"
+//   }
 // })
 
-// pause.addEventListener("click", () => {
-//   tl.pause()
+
+// gsap.set(".imageDiv", {
+//   scale: 0.3
 // })
 
-// restart.addEventListener("click", () => {
-//   tl.restart()
+// gsap.set(".content", {
+//   gap: "37rem",
+//   opacity:0
 // })
 
-// reverse.addEventListener("click", () => {
-//   tl.reverse()
-// })
-
-// seek.addEventListener("click", () => {
-//   tl.seek("box1")
-// })
-
-// scrolltrigger
-
-// gsap.to(".box", {
-//   x:600,
-//   ease: "power4.out",
+// const tl = gsap.timeline({
 //   scrollTrigger: {
 //     trigger: ".page2",
 //     start: "top top",
 //     end: "top -100%",
 //     scrub: true,
 //     pin: true,
-//     onEnter: () => {},
-//     onLeave: () => {},
-//     onUpdate: () => {}
 //   }
 // })
 
-gsap.set(".imageDiv", {
-  scale: 0.3
-})
-
-gsap.set(".content", {
-  gap: "37rem",
-  opacity:0
-})
-
-const tl = gsap.timeline({
-  scrollTrigger: {
-    trigger: ".page2",
-    start: "top top",
-    end: "top -100%",
-    scrub: true,
-    pin: true,
-  }
-})
-
-tl.to(".imageDiv", {
-  scale: 1,
-  ease: "power4.out",
-}).to(".content", {
-  gap: "7rem",
-  opacity:1
-}, "<")
+// tl.to(".imageDiv", {
+//   scale: 1,
+//   ease: "power4.out",
+// }).to(".content", {
+//   gap: "7rem",
+//   opacity:1
+// }, "<")
