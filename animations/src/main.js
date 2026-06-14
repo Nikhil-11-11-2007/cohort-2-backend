@@ -1,23 +1,25 @@
 import './style.css'
 import gsap from 'gsap'
 import { Draggable } from 'gsap/Draggable';
+import { Flip } from 'gsap/Flip';
 import InertiaPlugin from 'gsap/InertiaPlugin';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from 'gsap/SplitText';
 
 
-gsap.registerPlugin(ScrollTrigger, SplitText, Draggable, InertiaPlugin);
+gsap.registerPlugin(ScrollTrigger, SplitText, Draggable, InertiaPlugin, Flip);
 
+// flip
 
-Draggable.create(".box", {
-  bounds: "#app",
-  type: "x,y",
-  edgeResistance: 0.5,
-  inertia: true,
-  dragResistance: 0.2,
+// Draggable.create(".box", {
+//   bounds: "#app",
+//   type: "x,y",
+//   edgeResistance: 0.5,
+//   inertia: true,
+//   dragResistance: 0.2,
   
 
-})
+// })
 
 // splitText 
 

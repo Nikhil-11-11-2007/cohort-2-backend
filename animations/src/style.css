@@ -18,6 +18,32 @@ body {
   justify-content: center;
 }
 
+.imageGallery {
+  height: 40%;
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.imageGallery img {
+  height: 100%;
+  width: 30%;
+  object-fit: cover;
+}
+
+.imageShow {
+  height: 60%;
+  width: 50%;
+  background-color: #4e0303;
+}
+
+.imageShow img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
 /*
 #app .title h1 {
   font-size: 7rem;
@@ -37,7 +63,7 @@ body {
   overflow: hidden;
 } */
 
-.box,
+/* .box,
 .box1,
 .box2,
 .box3 {
@@ -49,7 +75,7 @@ body {
 
 .box {
   background: darkred;
-}
+} */
 
 /*
 .box1 {
