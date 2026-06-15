@@ -1,48 +1,29 @@
-import React from 'react'
-import { motion } from 'motion/react'
+import React, { useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 
 const App = () => {
 
-  const containerVarient = {
-    hidden: {},
-    visible: {}
-  }
-
-  const boxVarient = {
-    hidden: {
-      opacity: 0
-    },
-    visible: {
-      opacity: 1,
-      x: 500
-    }
-  }
+  const [show, setShow] = useState(false)
 
   return (
     <div>
-      <motion.div
-        variants={containerVarient}
-        initial="hidden"
-        animate="visible"
-        transition={{staggerChildren: 0.1}}
-        className='container'
+      <button
+        onClick={() => {
+          setShow((prev) => !prev)
+        }}
       >
-        <motion.div
-          variants={boxVarient}
-          transition={{ duration: 1, ease: "easeInOut" }}
-          className="box"
+        {show ? "hide" : "show"}
+      </button>
+      <AnimatePresence>
+        {show && (<motion.div
+          initial={{ opacity: 0, y: 300 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          exit={{ opacity: 0, y: 300 }}
+          className='box'
         ></motion.div>
-        <motion.div
-          variants={boxVarient}
-          transition={{ duration: 1, ease: "easeInOut" }}
-          className="box"
-        ></motion.div>
-        <motion.div
-          variants={boxVarient}
-          transition={{ duration: 1, ease: "easeInOut" }}
-          className="box"
-        ></motion.div>
-      </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
