@@ -73,11 +73,10 @@ const TextReveal = forwardRef(
 
             return () => {
                 tlRef.current?.kill(),
-                    splitRef.current?.revert()
+                splitRef.current?.revert()
             }
 
         }, { scope: wrapperRef, dependencies: [splitBy, trigger, stagger, duration], revertOnUpdate: true })
-
 
         return (
             <div ref={wrapperRef} className={`overflow-hidden ${className}`}>
