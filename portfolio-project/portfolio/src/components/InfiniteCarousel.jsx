@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 import CarouselCard from "./CarouselCard";
 import gsap from "@/libs/gsap";
 
-const CARD_W = 250;
-const CARD_H = 310;
+const CARD_W = 210;
+const CARD_H = 280;
 const SCALE = 1.25;
 const CARD_GAP = 20;
 const DURATION = 25;

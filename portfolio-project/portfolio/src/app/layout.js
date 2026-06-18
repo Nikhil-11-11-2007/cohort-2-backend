@@ -2,6 +2,7 @@ import SmoothScroller from "@/components/SmoothScroller";
 import "./globals.css";
 
 import { Inter, JetBrains_Mono } from "next/font/google";
+import Navbar from "@/components/Navbar";
 
 export const inter = Inter({
   subsets: ["latin"],
@@ -25,6 +26,7 @@ export default function RootLayout({ children }) {
       className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <Navbar />
         <SmoothScroller>
           {children}
         </SmoothScroller>
