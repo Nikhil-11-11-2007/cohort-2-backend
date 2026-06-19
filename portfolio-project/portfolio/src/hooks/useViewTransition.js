@@ -37,11 +37,10 @@ const createStrips = () => {
 }
 
 const removeOverlay = () => {
+    if (typeof document === "undefined") return;
     const el = document.getElementById("page-transition-overlay")
-
-    if(el) el.remove()
+    if (el) el.remove()
 }
-
 
 const useViewTransition = () => {
 
@@ -52,7 +51,6 @@ const useViewTransition = () => {
     const navigateTo = useCallback((href) => {
 
         const overlay = createStrips()
-
         const strips = Array.from(overlay.children)
 
         gsap.to(strips, {
@@ -65,7 +63,6 @@ const useViewTransition = () => {
             },
             onComplete: () => {
                 router.push(href)
-
                 gsap.to(strips, {
                     scaleY: 0,
                     duration: 0.67,

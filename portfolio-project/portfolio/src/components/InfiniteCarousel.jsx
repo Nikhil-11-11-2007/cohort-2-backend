@@ -15,7 +15,6 @@ const InfiniteCarousel = ({ projects }) => {
 
     useEffect(() => {
         const singleWidth = projects.length * (CARD_W + CARD_GAP)
-        console.log(singleWidth)
         tweenRef.current = gsap.to(trackRef.current, {
             x: -singleWidth,
             ease: "none",

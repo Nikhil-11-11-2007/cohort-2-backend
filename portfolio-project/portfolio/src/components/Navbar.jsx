@@ -3,7 +3,7 @@ import TextReveal from "./TextReveal"
 
 const Navbar = () => {
     return (
-        <div className="fixed z-[30] top-0 left-0 h-[7vh] flex items-center justify-between px-[2rem] py-[1.5rem] w-full bg-red-300 ">
+        <div className="fixed z-[30] top-0 left-0 h-[7vh] flex items-center justify-between px-[2rem] py-[1.5rem] w-full">
             <div className="leftNameSide">
                 <TextReveal>
                     <h3 className="text-[1.15rem] uppercase">Nikhil Gupta</h3>

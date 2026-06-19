@@ -39,7 +39,7 @@ const TextReveal = forwardRef(
             const elements = splitRef.current[splitBy]
 
             gsap.set(elements, {
-                yPercent: 110
+                yPercent: 110,
             })
 
             tlRef.current = gsap.timeline({
@@ -71,9 +71,16 @@ const TextReveal = forwardRef(
                 })
             }
 
+            console.log(splitRef.current.lines)
+            console.log({
+                splitBy,
+                text: wrapperRef.current?.textContent,
+                lines: splitRef.current?.lines?.length,
+            });
+
             return () => {
                 tlRef.current?.kill(),
-                splitRef.current?.revert()
+                    splitRef.current?.revert()
             }
 
         }, { scope: wrapperRef, dependencies: [splitBy, trigger, stagger, duration], revertOnUpdate: true })
