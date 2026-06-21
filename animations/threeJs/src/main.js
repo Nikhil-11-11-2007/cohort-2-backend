@@ -2,15 +2,22 @@ import './style.css'
 import * as THREE from "three"
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+
+const size = {
+  width: window.innerWidth,
+  height: window.innerHeight
+}
+
 // SCENE (set)
 
 const scene = new THREE.Scene()
+const clock = new THREE.Clock()
 
 // CAMERA
 
 const camera = new THREE.PerspectiveCamera(
   75,
-  window.innerWidth / window.innerHeight,
+  size.width / size.height,
   0.01,
   100,
 )
@@ -44,13 +51,25 @@ const renderer = new THREE.WebGLRenderer({
 const controls = new OrbitControls( camera, renderer.domElement ); 
 controls.enableDamping = true
 
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(size.width, size.height);
+
+window.addEventListener("resize", () => {
+  size.width = window.innerWidth
+  size.height = window.innerHeight
+
+  camera.aspect = size.width / size.height
+  camera.updateProjectionMatrix()
+
+  renderer.setSize(size.width, size.height)
+})
 
   // renderer.render(scene,camera)
 
 const animate = () => {
   
-  // cube.rotation.y += 0.01;
+  const delta = clock.getElapsedTime()
+
+  cube.rotation.y = delta;
 
   controls.update()
 
