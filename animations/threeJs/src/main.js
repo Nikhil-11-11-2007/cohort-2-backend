@@ -46,13 +46,47 @@ const camera = new THREE.PerspectiveCamera(
 
 camera.position.z = 5
 
+// light
+
+// ambientLight
+const ambientLight = new THREE.AmbientLight("#ffffff", 1)
+
+// 7 -> intensity jitn bhadoge utna bright dikhega 
+
+scene.add(ambientLight)
+
+// directonalLight
+
+const directonalLight = new THREE.DirectionalLight("#ffffff", 3)
+
+directonalLight.position.set(1,2,3)
+
+// scene.add(directonalLight)
+
+const directonalLightHelper = new THREE.DirectionalLightHelper(directonalLight)
+
+// scene.add(directonalLightHelper)
+
+// pointLight
+
+const pointLight = new THREE.PointLight("#ffffff", 5, 5, 1)
+
+pointLight.position.set(0,3,0)
+
+scene.add(pointLight)
+
+const pointLightHelper = new THREE.PointLightHelper(pointLight)
+
+scene.add(pointLightHelper)
+
+
 // MESH (3D object)
 
-const geometry = new THREE.BoxGeometry(2, 2, 2)
+const geometry = new THREE.BoxGeometry(1, 1, 1)
 // const geometry = new THREE.CylinderGeometry( 1, 1, 4, 32 );
-const material = new THREE.MeshBasicMaterial({
-  // color: "rgba(225, 10, 7, 0.72)"
-  map: texture2
+const material = new THREE.MeshStandardMaterial({
+  color: "rgba(225, 10, 7, 0.72)"
+  // map: texture2
 })
 
 const cube = new THREE.Mesh(geometry, material)
