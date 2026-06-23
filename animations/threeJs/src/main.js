@@ -52,28 +52,28 @@ envMap.load("/envMap.hdr", (envMap) => {
 
 // gltf loader
 
-const gltf = new GLTFLoader()
+// const gltf = new GLTFLoader()
 
-let mixer;
+// let mixer;
 
-gltf.load("/robot.glb", (gltf) => {
+// gltf.load("/robot.glb", (gltf) => {
 
-  
-  const model = gltf.scene;
-  
-  model.position.y = -2
-  
-  // console.log(gltf.animations)
 
-  mixer = new THREE.AnimationMixer(model);
+//   const model = gltf.scene;
 
-  const action = mixer.clipAction(gltf.animations[0])
+//   model.position.y = -2
 
-  action.play()
-  
-  scene.add(model)
+//   // console.log(gltf.animations)
 
-})
+//   mixer = new THREE.AnimationMixer(model);
+
+//   const action = mixer.clipAction(gltf.animations[0])
+
+//   action.play()
+
+//   scene.add(model)
+
+// })
 
 // CAMERA
 
@@ -132,6 +132,17 @@ const material = new THREE.MeshStandardMaterial({
 
 const cube = new THREE.Mesh(geometry, material)
 
+const rayCaster = new THREE.Raycaster()
+
+const mouse = new THREE.Vector2()
+
+
+window.addEventListener("mousemove", (e) => {
+  mouse.x = (e.clientX / window.innerWidth) * 2 - 1
+  mouse.y = -((e.clientY / window.innerHeight) * 2 - 1)
+  // console.log(mouse.x, mouse.y)
+})
+
 // position of the cube
 
 // cube.position.x = 1.5
@@ -146,7 +157,18 @@ const cube = new THREE.Mesh(geometry, material)
 
 // cube.rotation.x = Math.PI / 3
 
-// scene.add(cube)
+scene.add(cube)
+
+window.addEventListener("click", () => {
+  rayCaster.setFromCamera(mouse, camera)
+
+  const intersect = rayCaster.intersectObject(cube)
+
+  if (intersect.length > 0) {
+    cube.material.color.set("green")
+  }
+
+})
 
 // CANVAS (parda)
 
@@ -173,17 +195,23 @@ window.addEventListener("resize", () => {
   renderer.setSize(size.width, size.height)
 })
 
+
 // renderer.render(scene,camera)
 
 const animate = () => {
 
+  // for rotating cube use this --
   const delta = clock.getElapsedTime()
 
   // cube.rotation.y = delta;
 
-  if(mixer) {
-    mixer.update(delta * 0.01)
-  }
+  // for animating robot use this -- 
+
+  // const delta = clock.getDelta()
+
+  // if (mixer) {
+  //   mixer.update(delta * 2)
+  // }
 
   controls.update()
 
