@@ -1,4 +1,4 @@
-import { Environment, useGLTF, useTexture } from '@react-three/drei'
+import { Environment, Instance, Instances, useGLTF, useTexture } from '@react-three/drei'
 import { useFrame, useLoader } from '@react-three/fiber'
 import React, { useRef } from 'react'
 import * as THREE from "three"
@@ -12,8 +12,9 @@ const Experience = () => {
     })
 
     // use this TextureLoader
-    const { texture, texture2 } = useTexture(
+    const { texture, texture2, matcap } = useTexture(
         {
+            matcap: "./matcap.png",
             texture: "https://images.unsplash.com/photo-1779896411942-ea4ca54de043?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
             texture2: "https://images.unsplash.com/photo-1781461565715-887bd369f481?q=80&w=1175&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         }
@@ -32,18 +33,20 @@ const Experience = () => {
 
     return (
         <>
-            <mesh onClick={handelClick} ref={cubeRef}>
-                <boxGeometry args={[2, 2, 2]} />
-                {/* <meshBasicMaterial map={texture2} color={""} /> */}
-                <meshStandardMaterial roughness={0.01} metalness={0.9} color={"red"} />
-            </mesh>
-
-            {/* <ambientLight intensity={3} color={"#fffff"} />
-
-            <primitive object={scene} position={[0,-2,0]} /> */}
-
-            <Environment files='./envMap.hdr' />
-
+            <Instances>
+                {/* <octahedronGeometry /> */}
+                <dodecahedronGeometry />
+                <meshMatcapMaterial matcap={matcap} />
+                {Array.from({ length: 200 }).map((_, id) => {
+                    return <Instance key={id} position={[
+                        Math.random() * 50 - 25,
+                        Math.random() * 10 - 5,
+                        Math.random() * 50 - 25
+                    ]}
+                        scale={Math.random() + 0.25}
+                    />
+                })}
+            </Instances>
         </>
     )
 }
