@@ -13,7 +13,7 @@ const ProjectPage = ({ project }) => {
     useGSAP(() => {
 
         gsap.to(imageRef.current, {
-            clipPath: "inset(0% 0 0 0)",
+            clipPath: "inset(0 0 0% 0)",
             duration: 1.3,
             ease: "expo.out",
             scale: 1,
@@ -35,7 +35,7 @@ const ProjectPage = ({ project }) => {
                         <div className="imageDiv overflow-hidden h-full w-full">
                             <img
                                 ref={imageRef}
-                                style={{ clipPath: "inset(100% 0 0 0)" }}
+                                style={{ clipPath: "inset(0 0 100% 0)" }}
                                 className="h-full scale-[1.4] w-full object-cover"
                                 src={project.coverImage}
                                 alt=""
@@ -63,10 +63,18 @@ const ProjectPage = ({ project }) => {
                         </div>
                     </div>
                 </section>
-                <section></section>
-                <section></section>
-                <section></section>
-                <section></section>
+                {project.gallery.map((elem, idx) => {
+                    return (
+                        <section key={idx} className="h-screen w-full bg-red-300 ">
+                            <div className="container">
+                                
+                            </div>
+                        </section>
+                    )
+                })}
+                {/* <section className="h-screen w-full"></section>
+                <section className="h-screen w-full"></section>
+                <section className="h-screen w-full"></section> */}
                 <footer></footer>
             </main>
         </>
