@@ -120,15 +120,48 @@ scene.add(ambientLight)
 // scene.add(pointLightHelper)
 
 // MESH (3D object)
-const geometry = new THREE.BoxGeometry(1, 1, 1)
+const geometry = new THREE.PlaneGeometry(1.5, 1.5, 32, 32)
 // const geometry = new THREE.CylinderGeometry( 1, 1, 3, 32 );
 // const geometry = new THREE.SphereGeometry( 1, 32, 16 );
-const material = new THREE.MeshStandardMaterial({
-  color: "rgba(225, 10, 7, 0.72)",
-  metalness: 0.9,
-  roughness: 0.01
-  // map: texture2
-})
+// const material = new THREE.MeshStandardMaterial({
+//   color: "rgba(225, 10, 7, 0.72)",
+//   metalness: 0.9,
+//   roughness: 0.01,
+//   // wireframe: true
+//   // map: texture2
+// })
+
+// creating a material using shader
+
+const material = new THREE.ShaderMaterial({
+  vertexShader: `
+
+    uniform float uTime;
+
+    void main(){
+        vec3 pos = position;
+        pos.z += sin(pos.x * 6.0 + uTime);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos,1.0);
+    }
+
+  `,
+
+  fragmentShader: `
+  
+      void main (){
+          gl_FragColor = vec4(0.0,0.0,1.0,1.0);
+      }
+  `,
+
+  uniforms: {
+    uTime: {value: 0}
+  },
+
+  // wireframe: true,
+
+  side: THREE.DoubleSide
+
+});
 
 const cube = new THREE.Mesh(geometry, material)
 
@@ -212,6 +245,8 @@ const animate = () => {
   // if (mixer) {
   //   mixer.update(delta * 2)
   // }
+
+  cube.material.uniforms.uTime.value = delta
 
   controls.update()
 
