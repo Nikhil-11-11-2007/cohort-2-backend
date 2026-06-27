@@ -84,7 +84,7 @@ const camera = new THREE.PerspectiveCamera(
   100,
 )
 
-camera.position.z = 5
+camera.position.z = 3
 
 // light
 
@@ -138,23 +138,32 @@ const material = new THREE.ShaderMaterial({
 
     uniform float uTime;
 
+    varying vec2 vUv;
+
     void main(){
         vec3 pos = position;
-        pos.z += sin(pos.x * 6.0 + uTime);
+        // pos.z += sin(pos.x * 6.0 + uTime);
         gl_Position = projectionMatrix * modelViewMatrix * vec4(pos,1.0);
+
+        vUv = uv;
+
     }
 
   `,
 
   fragmentShader: `
+
+      varying vec2 vUv;
+      uniform sampler2D uTexA;
   
       void main (){
-          gl_FragColor = vec4(0.0,0.0,1.0,1.0);
+          gl_FragColor = vec4(vUv,0.0,1.0);
       }
   `,
 
   uniforms: {
-    uTime: {value: 0}
+    uTime: { value: 0 },
+    uTexA: {value: texture}
   },
 
   // wireframe: true,
