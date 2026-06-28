@@ -155,15 +155,25 @@ const material = new THREE.ShaderMaterial({
 
       varying vec2 vUv;
       uniform sampler2D uTexA;
+      uniform sampler2D uTexB;
   
       void main (){
-          gl_FragColor = vec4(vUv,0.0,1.0);
+
+        vec2 uv = vUv;
+
+        vec4 colorA = texture2D(uTexA,uv); // ye color de rha hai like this (1,0,0.0,0.0,1.0) image se nikal ke 
+        vec4 colorB = texture2D(uTexB,uv);
+
+        vec4 finalColor = mix(colorA,colorB,0.5);
+
+        gl_FragColor = finalColor;
       }
   `,
 
   uniforms: {
     uTime: { value: 0 },
-    uTexA: {value: texture}
+    uTexA: { value: texture },
+    uTexB: { value: texture2 }
   },
 
   // wireframe: true,
