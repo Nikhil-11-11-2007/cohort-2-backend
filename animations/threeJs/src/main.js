@@ -1,4 +1,5 @@
 import './style.css'
+import gsap from "gsap"
 import * as THREE from "three"
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader, RGBELoader } from "three/examples/jsm/Addons.js"
@@ -156,24 +157,32 @@ const material = new THREE.ShaderMaterial({
       varying vec2 vUv;
       uniform sampler2D uTexA;
       uniform sampler2D uTexB;
+      uniform float uProgress;
   
       void main (){
 
+        vec2 dir = normalize(vec2(0.0,1.0));
+
         vec2 uv = vUv;
+        vec2 uvA = uv - dir;
+        vec2 uvB = uv + dir;
 
-        vec4 colorA = texture2D(uTexA,uv); // ye color de rha hai like this (1,0,0.0,0.0,1.0) image se nikal ke 
-        vec4 colorB = texture2D(uTexB,uv);
+        uvA.y -= 0.5;
 
-        vec4 finalColor = mix(colorA,colorB,0.5);
+        vec4 colorA = texture2D(uTexA,uvA); // ye color de rha hai like this (1,0,0.0,0.0,1.0) image se nikal ke 
+        vec4 colorB = texture2D(uTexB,uvB);
 
-        gl_FragColor = finalColor;
+        vec4 finalColor = mix(colorA,colorB,uProgress);
+
+        gl_FragColor = colorA;
       }
   `,
 
   uniforms: {
     uTime: { value: 0 },
     uTexA: { value: texture },
-    uTexB: { value: texture2 }
+    uTexB: { value: texture2 },
+    uProgress: {value: 0.0}
   },
 
   // wireframe: true,
@@ -217,7 +226,11 @@ window.addEventListener("click", () => {
   const intersect = rayCaster.intersectObject(cube)
 
   if (intersect.length > 0) {
-    cube.material.color.set("green")
+    gsap.to(material.uniforms.uProgress, {
+      value: 1,
+      duration: 1.2,
+      ease: "power3.out"
+    })
   }
 
 })
