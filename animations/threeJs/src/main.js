@@ -20,23 +20,35 @@ const clock = new THREE.Clock()
 
 const textureLoader = new THREE.TextureLoader()
 
-const texture = textureLoader.load(
+// const texture = textureLoader.load(
+//   "https://images.unsplash.com/photo-1781112981218-db02b34ce0ac?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+//   () => {
+//     console.log("Texture is loaded")
+//   },
+//   () => {
+//     console.log("Texture is loading...")
+//   },
+//   () => {
+//     console.log("error in texture loading")
+//   }
+// )
+
+// const texture2 = textureLoader.load(
+//   "https://images.unsplash.com/photo-1781460661007-48781a25a962?q=80&w=685&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+
+// )
+
+const imageUrls = [
   "https://images.unsplash.com/photo-1781112981218-db02b34ce0ac?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  () => {
-    console.log("Texture is loaded")
-  },
-  () => {
-    console.log("Texture is loading...")
-  },
-  () => {
-    console.log("error in texture loading")
-  }
-)
-
-const texture2 = textureLoader.load(
   "https://images.unsplash.com/photo-1781460661007-48781a25a962?q=80&w=685&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1781817388820-be87d7281356?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1781112981218-db02b34ce0ac?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1781460661007-48781a25a962?q=80&w=685&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+]
 
-)
+const textures = imageUrls.map((url) => textureLoader.load(url))
+
+let currentIndex = 0;
 
 // RGBELoader 
 
@@ -158,31 +170,72 @@ const material = new THREE.ShaderMaterial({
       uniform sampler2D uTexA;
       uniform sampler2D uTexB;
       uniform float uProgress;
+
+      vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+
+float snoise(vec2 v){
+  const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+           -0.577350269189626, 0.024390243902439);
+  vec2 i  = floor(v + dot(v, C.yy) );
+  vec2 x0 = v -   i + dot(i, C.xx);
+  vec2 i1;
+  i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+  vec4 x12 = x0.xyxy + C.xxzz;
+  x12.xy -= i1;
+  i = mod(i, 289.0);
+  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+  + i.x + vec3(0.0, i1.x, 1.0 ));
+  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
+    dot(x12.zw,x12.zw)), 0.0);
+  m = m*m ;
+  m = m*m ;
+  vec3 x = 2.0 * fract(p * C.www) - 1.0;
+  vec3 h = abs(x) - 0.5;
+  vec3 ox = floor(x + 0.5);
+  vec3 a0 = x - ox;
+  m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+  vec3 g;
+  g.x  = a0.x  * x0.x  + h.x  * x0.y;
+  g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+  return 130.0 * dot(m, g);
+}
   
       void main (){
 
-        vec2 dir = normalize(vec2(0.0,1.0));
-
         vec2 uv = vUv;
-        vec2 uvA = uv - dir;
-        vec2 uvB = uv + dir;
+        vec2 dir = normalize(vec2(0.0,1.0));
+        
+        float ripple = sin(uProgress * 3.14) * 0.05;
+        
+        float gradient = dot(uv - 0.5, dir) + 0.5; // ye line y mai 0 se 1 ke beech mai value degi 
 
-        uvA.y -= 0.5;
+        float n = snoise(uv * 6.0) * 0.25;
+
+        float localGradient = gradient + n;
+
+        float edge = 0.15;
+
+        float sweep = uProgress * (1.0 + edge * 2.0) - edge;
+
+        float mixer = smoothstep(localGradient - edge, localGradient + edge, sweep);
+        
+        vec2 uvA = uv - dir * ripple;
+        vec2 uvB = uv + dir * ripple;
 
         vec4 colorA = texture2D(uTexA,uvA); // ye color de rha hai like this (1,0,0.0,0.0,1.0) image se nikal ke 
         vec4 colorB = texture2D(uTexB,uvB);
 
-        vec4 finalColor = mix(colorA,colorB,uProgress);
+        vec4 finalColor = mix(colorA,colorB,mixer);
 
-        gl_FragColor = colorA;
+        gl_FragColor = finalColor;
       }
   `,
 
   uniforms: {
     uTime: { value: 0 },
-    uTexA: { value: texture },
-    uTexB: { value: texture2 },
-    uProgress: {value: 0.0}
+    uTexA: { value: textures[0] },
+    uTexB: { value: textures[1] },
+    uProgress: { value: 0.0 }
   },
 
   // wireframe: true,
@@ -220,20 +273,57 @@ window.addEventListener("mousemove", (e) => {
 
 scene.add(cube)
 
-window.addEventListener("click", () => {
-  rayCaster.setFromCamera(mouse, camera)
+const thumbs = document.querySelectorAll(".thumb")
 
-  const intersect = rayCaster.intersectObject(cube)
+thumbs.forEach((thumb) => {
 
-  if (intersect.length > 0) {
-    gsap.to(material.uniforms.uProgress, {
-      value: 1,
-      duration: 1.2,
-      ease: "power3.out"
-    })
-  }
+    thumb.addEventListener("mouseenter", () => {
 
-})
+        const nextIndex = Number(thumb.dataset.index);
+
+        if(nextIndex === currentIndex) return;
+
+        material.uniforms.uTexA.value = textures[currentIndex];
+
+        material.uniforms.uTexB.value = textures[nextIndex];
+
+        material.uniforms.uProgress.value = 0;
+
+        gsap.to(material.uniforms.uProgress,{
+            value:1,
+            duration:1.2,
+            ease:"power3.out",
+
+            onComplete(){
+
+                currentIndex = nextIndex;
+
+                material.uniforms.uTexA.value = textures[currentIndex];
+
+                material.uniforms.uProgress.value = 0;
+
+            }
+
+        });
+
+    });
+
+});
+
+// window.addEventListener("click", () => {
+//   rayCaster.setFromCamera(mouse, camera)
+
+//   const intersect = rayCaster.intersectObject(cube)
+
+//   if (intersect.length > 0) {
+//     gsap.to(material.uniforms.uProgress, {
+//       value: 1,
+//       duration: 1.2,
+//       ease: "power3.out"
+//     })
+//   }
+
+// })
 
 // CANVAS (parda)
 

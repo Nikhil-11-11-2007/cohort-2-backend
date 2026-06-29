@@ -5,6 +5,32 @@
 }
 
 body{
-  background-color: #111;
-  overflow: hidden;
+    margin:0;
+    overflow:hidden;
+}
+
+canvas{
+    display:block;
+}
+
+.gallery{
+    position:fixed;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:15px;
+}
+
+.thumb{
+    width:120px;
+    height:80px;
+    object-fit:cover;
+    cursor:pointer;
+    border-radius:8px;
+    transition:.3s;
+}
+
+.thumb:hover{
+    transform:scale(1.08);
 }
