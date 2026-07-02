@@ -71,12 +71,12 @@ const TextReveal = forwardRef(
                 })
             }
 
-            console.log(splitRef.current.lines)
-            console.log({
-                splitBy,
-                text: wrapperRef.current?.textContent,
-                lines: splitRef.current?.lines?.length,
-            });
+            // console.log(splitRef.current.lines)
+            // console.log({
+            //     splitBy,
+            //     text: wrapperRef.current?.textContent,
+            //     lines: splitRef.current?.lines?.length,
+            // });
 
             return () => {
                 tlRef.current?.kill(),
