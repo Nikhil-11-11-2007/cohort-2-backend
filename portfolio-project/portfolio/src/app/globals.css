@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+body{
+    overflow: hidden;
+}
+
 :root {
   --font-inter: var(--font-inter);
   --font-jetbrains-mono: var(--font-jetbrains-mono);

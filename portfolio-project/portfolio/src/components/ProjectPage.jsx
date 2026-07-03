@@ -1,11 +1,12 @@
 "use client"
 
-import gsap, { useGSAP } from "@/libs/gsap"
+import gsap, { ScrollTrigger, useGSAP } from "@/libs/gsap"
 import TextReveal from "./TextReveal"
 import { useRef } from "react"
+import useViewTransition from "@/hooks/useViewTransition"
 
 
-const ProjectPage = ({ project }) => {
+const ProjectPage = ({ project, nextProject }) => {
 
     const containerRef = useRef(null)
     const imageRef = useRef(null)
@@ -23,21 +24,40 @@ const ProjectPage = ({ project }) => {
         })
 
 
-        sections.forEach((section,idx) => {
+        sections.forEach((section, idx) => {
             const container = section.children[0]
 
-            gsap.to(container,{
+            gsap.to(container, {
                 rotate: 0,
+                ease: "none",
                 scrollTrigger: {
                     trigger: section,
                     start: "top bottom",
                     end: "top 20%",
                     scrub: true
                 }
+            });
+
+
+            if (idx === sections.length - 1) return
+
+            ScrollTrigger.create({
+                trigger: section,
+                start: "bottom bottom",
+                end: "bottom top",
+                pin: true,
+                pinSpacing: false
             })
+
         })
 
     }, { scope: containerRef })
+
+    const {navigateTo} = useViewTransition()
+
+    const handleClick = () => {
+        navigateTo(`/project/${nextProject.slug}`)
+    }
 
     return (
         <>
@@ -84,14 +104,17 @@ const ProjectPage = ({ project }) => {
                 </section>
                 {project.gallery.map((elem, idx) => {
                     return (
-                        <section key={idx} className="h-screen w-full bg-red-300 ">
-                            <div style={{transformOrigin: "bottom left"}} className="sectionContainer rotate-[30deg] h-full w-full ">
+                        <section key={idx} className="h-screen w-full ">
+                            <div style={{ transformOrigin: "bottom left" }} className="sectionContainer rotate-[30deg] h-full w-full ">
                                 <img className="h-full w-full object-cover " src={elem} alt="" />
                             </div>
                         </section>
                     )
                 })}
-                <footer></footer>
+                <footer className="h-screen w-full flex flex-col items-center justify-center ">
+                    <h1>Next Project</h1>
+                    <h1 className="text-3xl cursor-pointer" onClick={handleClick}>{nextProject.title}</h1>
+                </footer>
             </main>
         </>
     )
