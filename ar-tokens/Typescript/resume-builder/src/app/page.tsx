@@ -1,25 +1,20 @@
-import Link from "next/link";
+import Navbar from "@/components/shared/Navbar";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen flex flex-col justify-center items-center gap-5">
-      <h1 className="text-5xl font-bold">
-        ATS Resume Builder
-      </h1>
+    <>
+      <Navbar />
 
-      <Link
-        href="/auth/login"
-        className="bg-blue-600 px-5 py-3 rounded text-white"
-      >
-        Login
-      </Link>
+      <main className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center px-6">
+        <h1 className="mb-4 text-center text-5xl font-bold">
+          Build ATS Friendly Resume
+        </h1>
 
-      <Link
-        href="/auth/register"
-        className="bg-green-600 px-5 py-3 rounded text-white"
-      >
-        Register
-      </Link>
-    </main>
+        <p className="max-w-2xl text-center text-lg text-gray-600">
+          Create professional resumes in minutes with AI assistance,
+          ATS optimization, and beautiful templates.
+        </p>
+      </main>
+    </>
   );
 }
