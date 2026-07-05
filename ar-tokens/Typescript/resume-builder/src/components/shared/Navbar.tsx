@@ -8,8 +8,10 @@ export default function Navbar() {
     (state) => state.auth
   );
 
+  console.log(user)
+
   return (
-    <nav className="flex items-center justify-between border-b bg-white px-8 py-4 shadow-sm">
+    <nav className="flex items-center justify-between px-8 py-4 shadow-sm">
       {/* Logo */}
       <Link
         href="/"
