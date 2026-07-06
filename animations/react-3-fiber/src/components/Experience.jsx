@@ -34,10 +34,10 @@ const Experience = () => {
     return (
         <>
             <Instances>
-                {/* <octahedronGeometry /> */}
-                <dodecahedronGeometry />
+                <octahedronGeometry />
+                {/* <dodecahedronGeometry /> */}
                 <meshMatcapMaterial matcap={matcap} />
-                {Array.from({ length: 200 }).map((_, id) => {
+                {Array.from({ length: 300 }).map((_, id) => {
                     return <Instance key={id} position={[
                         Math.random() * 50 - 25,
                         Math.random() * 10 - 5,
