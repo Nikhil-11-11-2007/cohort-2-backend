@@ -4,6 +4,8 @@ import { ethers, BrowserProvider } from 'ethers'
 const Healthcare = () => {
 
     const [accountAddress, setAccountAddress] = useState("");
+    const [authorizeAddress, setAuthorizeAddress] = useState("");
+    const [smartcontract, setsmartContract] = useState("");
     const contractAddress = "0xA6063Df651f138b033049E41bf24433Cf2BA788A";
     const contractAbi = [
         {
@@ -220,17 +222,25 @@ const Healthcare = () => {
             const signer = await provider.getSigner();
             setAccountAddress(await signer.getAddress())
 
-            const smartContract = new ethers.Contract(contractAddress,contractAbi,accountAddress)
+            const contract = new ethers.Contract(contractAddress, contractAbi, provider)
+            setsmartContract(contract)
+            const owner = await contract.getOwner()
+            console.log(owner)
 
         }
 
         connectWallet()
     }, [])
 
+    const authorityProvider = async () => {
+        const provided = await smartcontract.authorizeByOwner(authorizeAddress)
+        console.log(provided)
+    }
+
     return (
         <div className='container'>
             <h1 className="title">HealthCare Application</h1>
-            <p className='account-info'>Connected Account: </p>
+            {accountAddress && <p className='account-info'>Connected Account: {accountAddress} </p>}
             <p className='owner-info'>You are the contract owner</p>
 
             <div className='form-section'>
@@ -249,8 +259,10 @@ const Healthcare = () => {
             </div>
             <div className="form-section">
                 <h2>Authorize HealthCare Provider</h2>
-                <input className='input-field' type="text" placeholder='Provider Address' value="" onChange="" />
-                <button className='action-button' onClick="">Authorize Provider</button>
+                <input className='input-field' type="text" placeholder='Provider Address' value={authorizeAddress}
+                    onChange={(e) => setAuthorizeAddress(e.target.value)}
+                />
+                <button className='action-button' onClick={authorityProvider}>Authorize Provider</button>
             </div>
 
             {/* <div className='records-section'>
