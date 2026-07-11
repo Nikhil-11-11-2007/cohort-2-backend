@@ -6,6 +6,12 @@ const Healthcare = () => {
     const [accountAddress, setAccountAddress] = useState("");
     const [authorizeAddress, setAuthorizeAddress] = useState("");
     const [smartcontract, setsmartContract] = useState("");
+    const [patientId, setPatientId] = useState("");
+    const [patientName, setpatientName] = useState("");
+    const [patientAge, setPatientAge] = useState("");
+    const [diagnosis, setDiagnosis] = useState("");
+    const [treatment, setTreatment] = useState("");
+    const [patientAllRecords, setPatientAllRecords] = useState([]);
     const contractAddress = "0xA6063Df651f138b033049E41bf24433Cf2BA788A";
     const contractAbi = [
         {
@@ -222,10 +228,10 @@ const Healthcare = () => {
             const signer = await provider.getSigner();
             setAccountAddress(await signer.getAddress())
 
-            const contract = new ethers.Contract(contractAddress, contractAbi, provider)
+            const contract = new ethers.Contract(contractAddress, contractAbi, signer)
             setsmartContract(contract)
             const owner = await contract.getOwner()
-            console.log(owner)
+            // console.log(owner)
 
         }
 
@@ -233,8 +239,37 @@ const Healthcare = () => {
     }, [])
 
     const authorityProvider = async () => {
-        const provided = await smartcontract.authorizeByOwner(authorizeAddress)
-        console.log(provided)
+        try {
+            const provided = await smartcontract.authorizeByOwner(authorizeAddress)
+            setAuthorizeAddress("")
+        } catch (error) {
+            console.log("error", error)
+        }
+    }
+
+    const addPatientRecord = async () => {
+        try {
+            const record = await smartcontract.addPatientRecord(patientId, patientName, diagnosis, treatment, patientAge)
+            setPatientId("")
+            setpatientName("")
+            setDiagnosis("")
+            setTreatment("")
+            setPatientAge("")
+
+        } catch (error) {
+            console.log("error", error)
+        }
+    }
+
+    const fetchAllRecords = async () => {
+        try {
+            const allRecords = await smartcontract.featchPatientRecords(patientId);
+            setPatientAllRecords(allRecords)
+            setPatientId("")
+            console.log(allRecords)
+        } catch (error) {
+            console.log("error", error)
+        }
     }
 
     return (
@@ -245,16 +280,30 @@ const Healthcare = () => {
 
             <div className='form-section'>
                 <h2>Fetch Patient Records</h2>
-                <input className='input-field' type='text' placeholder='Enter Patient ID' value="" onChange="" />
-                <button className='action-button' onClick="">Fetch Records</button>
+                <input className='input-field' type='text' placeholder='Enter Patient ID' value={patientId}
+                    onChange={(e) => setPatientId(e.target.value)}
+                />
+                <button className='action-button' onClick={fetchAllRecords}>Fetch Records</button>
             </div>
 
             <div className="form-section">
                 <h2>Add Patient Record</h2>
-                <input className='input-field' type='text' placeholder='pateint name' value="" onChange="" />
-                <input className='input-field' type='text' placeholder='Diagnosis' value="" onChange="" />
-                <input className='input-field' type='text' placeholder='Treatment' value="" onChange="" />
-                <button className='action-button' onClick="">Add Records</button>
+                <input className='input-field' type='text' placeholder='pateint Id' value={patientId}
+                    onChange={(e) => setPatientId(e.target.value)}
+                />
+                <input className='input-field' type='text' placeholder='pateint name' value={patientName}
+                    onChange={(e) => setpatientName(e.target.value)}
+                />
+                <input className='input-field' type='text' placeholder='pateint age' value={patientAge}
+                    onChange={(e) => setPatientAge(e.target.value)}
+                />
+                <input className='input-field' type='text' placeholder='Diagnosis' value={diagnosis}
+                    onChange={(e) => setDiagnosis(e.target.value)}
+                />
+                <input className='input-field' type='text' placeholder='Treatment' value={treatment}
+                    onChange={(e) => setTreatment(e.target.value)}
+                />
+                <button className='action-button' onClick={addPatientRecord}>Add Records</button>
 
             </div>
             <div className="form-section">
@@ -265,17 +314,19 @@ const Healthcare = () => {
                 <button className='action-button' onClick={authorityProvider}>Authorize Provider</button>
             </div>
 
-            {/* <div className='records-section'>
+            <div className='records-section'>
                 <h2>Patient Records</h2>
-                {patientRecords.map((record, index) => (
+                {patientAllRecords.map((record, index) => (
                     <div key={index}>
-                        <p>Record ID: {record.recordID.toNumber()}</p>
+                        <p>Record ID: {record.record_id}</p>
+                        <p>PatientName: {record.patient_name}</p>
                         <p>Diagnosis: {record.diagnosis}</p>
                         <p>Treatment: {record.treatment}</p>
-                        <p>Timestamp: {new Date(record.timestamp.toNumber() * 1000).toLocaleString()}</p>
+                        <p>Age: {record.age}</p>
+                        <p>Timestamp: {new Date(Number(record.timestamp) * 1000).toLocaleString()}</p>
                     </div>
                 ))}
-            </div> */}
+            </div>
 
         </div>
 
