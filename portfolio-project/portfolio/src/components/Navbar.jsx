@@ -20,13 +20,13 @@ const Navbar = () => {
             </div>
             <div className="rightNameSide flex gap-[1.2rem] ">
                 <TextReveal>
-                    <h3 >Home</h3>
+                    <h3 className="cursor-pointer" >Home</h3>
                 </TextReveal>
                 <TextReveal>
-                    <h3 onClick={handleClick}>About</h3>
+                    <h3 className="cursor-pointer" onClick={handleClick}>About</h3>
                 </TextReveal>
                 <TextReveal>
-                    <h3 >Contact</h3>
+                    <h3 className="cursor-pointer" >Contact</h3>
                 </TextReveal>
             </div>
         </div>
