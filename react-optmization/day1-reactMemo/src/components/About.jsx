@@ -1,6 +1,6 @@
 import React from 'react'
 
-const About = () => {
+const About = ({users}) => {
 
     console.log("About rendering...")
 
@@ -9,4 +9,6 @@ const About = () => {
     )
 }
 
-export default React.memo(About)
+export default React.memo(About, (prevProps, nextProps) => {
+    return prevProps.users.name === nextProps.users.name ? console.log("no-rerendering"):console.log("re-rendering")
+})
