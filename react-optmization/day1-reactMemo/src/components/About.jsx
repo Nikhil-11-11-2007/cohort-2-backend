@@ -1,6 +1,6 @@
 import React from 'react'
 
-const About = ({users}) => {
+const About = ({ users }) => {
 
     console.log("About rendering...")
 
@@ -10,5 +10,9 @@ const About = ({users}) => {
 }
 
 export default React.memo(About, (prevProps, nextProps) => {
-    return prevProps.users.name === nextProps.users.name ? console.log("no-rerendering"):console.log("re-rendering")
+    const same = prevProps.users.name === nextProps.users.name
+
+    console.log(same? "no-rerendering":"re-rendering")
+
+    return same
 })
