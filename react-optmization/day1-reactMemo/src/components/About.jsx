@@ -1,18 +1,28 @@
 import React from 'react'
 
-const About = ({ users }) => {
+const About = () => {
 
-    console.log("About rendering...")
-
-    return (
-        <div>About</div>
-    )
+    console.log("About rendering..")
+  return (
+    <div>
+      About
+      {/* <h1>aboutpage count - {count}</h1> */}
+    </div>
+  )
 }
 
-export default React.memo(About, (prevProps, nextProps) => {
-    const same = prevProps.users.name === nextProps.users.name
+export default React.memo(About)// ,(next,prev) => {return next.users.id === prev.users.id})
 
-    console.log(same? "no-rerendering":"re-rendering")
+// const About = React.memo(({users}) => {
+//     // console.log(users)
+//     console.log("About re-rendering...")
+//     return (
+//         <div>
+//             About
+//         </div>
+//     )
+// }, (prev,next) => {
+//     return prev.users === next.users
+// })
 
-    return same
-})
+// export default About
