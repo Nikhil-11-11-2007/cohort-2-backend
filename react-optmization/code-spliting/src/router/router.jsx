@@ -1,6 +1,8 @@
 import React, { lazy, Suspense } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import MainLayout from '../layout/MainLayout'
+import Skeleton from '../components/Skeleton'
+import ErrorBoundary from '../components/ErrorBoundary'
 const Home = lazy(() => import("../pages/Home"))
 const About = lazy(() => import("../pages/About"))
 const Product = lazy(() => import("../pages/Product"))
@@ -25,13 +27,15 @@ const router = createBrowserRouter([
             },
             {
                 path: "/product",
-                element: <Suspense fallback={<p>Loading...</p>} >
-                    <Product />
-                </Suspense>
+                element: <ErrorBoundary>
+                    <Suspense fallback={<p>Loading...</p>} >
+                        <Product />
+                    </Suspense>
+                </ErrorBoundary>
             },
             {
                 path: "/users",
-                element: <Suspense fallback={<p>Loading...</p>} >
+                element: <Suspense fallback={<Skeleton />} >
                     <Users />
                 </Suspense>
             }
