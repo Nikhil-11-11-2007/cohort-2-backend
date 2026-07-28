@@ -1,25 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 const App = () => {
 
-  const [search, setSearch] = useState("")
+  let lastClicked = 0
 
-  const handleChange = (e) => {
-    setSearch(e.target.value)
+  const Onclicked = () => {
+    const now = Date.now() 
+    if(now - lastClicked >= 2000){
+      console.log("Api calling", now)
+      lastClicked = now
+    }
   }
-  
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      console.log("Api calling", search)
-    }, 1000)
 
-    return () => clearTimeout(timer)
-
-  }, [search])
-  
   return (
     <div>
-      <input value={search} onChange={handleChange} type="text" placeholder='Search' />
+      <button onClick={Onclicked}>Click Me</button>
     </div>
   )
 }

@@ -11,3 +11,14 @@ html,body{
   color: whitesmoke;
   padding: 0.5rem;
 }
+
+button{
+  padding: 1rem 2rem;
+  border-radius: 1.5rem;
+  border: none;
+  background: linear-gradient(white,blue);
+  cursor: pointer;
+}
+button:active{
+  scale: 0.97;
+}
