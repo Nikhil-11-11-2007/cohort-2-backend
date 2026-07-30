@@ -33,13 +33,40 @@ const app = express()
 app.use(morgan("dev"))
 app.use(express.json())
 
-app.get("/api/user/:id", async (req, res) => {
+app.get("/api/users", async (req, res) => {
     try {
 
-        const user = await userModel.findOne({ _id: req.params.id })
+        const userFromCache = await redis.get(`users`)
+
+        // negative caching
+        if (userFromCache === "NULL") {
+            return res.status(404).json({
+                message: "No users found"
+            });
+        }
+
+        if (userFromCache) {
+            return res.status(200).json({
+                message: "Users Featched from cache",
+                data: JSON.parse(userFromCache)
+            })
+        }
+
+        const users = await userModel.find()
+
+        if (users.length === 0) {
+            await redis.set("users", "NULL", "EX", 60);
+
+            return res.status(404).json({
+                message: "No users found"
+            });
+        }
+
+        await redis.set(`users`, JSON.stringify(users), "EX", 60 * 60)
+
         res.status(200).json({
-            message: "User fetched Successfully",
-            data: user
+            message: "Users fetched Successfully",
+            data: users
         })
 
     } catch (error) {
@@ -53,7 +80,7 @@ app.get("/api/user/:id", async (req, res) => {
 app.post("/api/user", async (req, res) => {
     try {
         const { name, email } = req.body
-        const newUser = await userModel.create({name, email})
+        const newUser = await userModel.create({ name, email })
         res.status(201).json({
             message: "User created successfully",
             newUser
