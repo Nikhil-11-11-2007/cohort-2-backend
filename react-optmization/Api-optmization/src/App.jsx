@@ -9,8 +9,6 @@ const App = () => {
   const [postPerPage, setPostPerPage] = useState(10)
 
   const fetchData = async () => {
-
-
     const res = await axios.get("https://dummyjson.com/products")
     setPostData(res.data.products)
   }
@@ -18,7 +16,6 @@ const App = () => {
   useEffect(() => {
     fetchData()
   }, [])
-  // console.log(postData)
 
   const lastPostIndex = currentPage * postPerPage
   const firstPostIndex = lastPostIndex - postPerPage
@@ -36,7 +33,7 @@ const App = () => {
         })}
 
 
-        <PaginationButton />
+        <PaginationButton totalPost={postData.length} postPerPage={postPerPage} setCurrentPage={setCurrentPage} />
       </div>
     </div>
   )
