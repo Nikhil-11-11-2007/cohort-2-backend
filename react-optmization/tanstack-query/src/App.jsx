@@ -1,12 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
-import { fetchUsers } from './api/api'
+import { fetchProducts } from './api/api'
 
 const App = () => {
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["users"],
-    queryFn: fetchUsers
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+    // staleTime: 1000*10
+    // gcTime: 1000*10
   })
 
   
@@ -16,9 +18,10 @@ const App = () => {
   
   return (
     <div>
-      {data.map((user) => (
-        <div key={user.id}>
-          <h1>{user.name}</h1>
+      {data.map((product) => (
+        <div key={product.id}>
+          <img loading='lazy' src={product.image} alt="" />
+          <h1>{product.title}</h1>
         </div>
       ))}
     </div>

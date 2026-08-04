@@ -10,3 +10,7 @@ html,body{
   background: #111;
   color: whitesmoke;
 }
+
+img{
+  width: 10vw;
+}
