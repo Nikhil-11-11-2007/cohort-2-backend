@@ -28,6 +28,7 @@ export default function RegisterForm() {
     const router = useRouter();
     const dispatch = useAppDispatch();
     const error = useAppSelector((state) => state.auth.error)
+    const { loading } = useAppSelector((state) => state.auth)
 
     const {
         register,
@@ -158,9 +159,10 @@ export default function RegisterForm() {
 
                 <button
                     type="submit"
+                    disabled={loading}
                     className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700"
                 >
-                    Create Account
+                    {loading ? "Loading...": "Create Account"}
                 </button>
             </form>
 

@@ -26,7 +26,7 @@ export default function LoginForm() {
     const router = useRouter();
     const dispatch = useAppDispatch();
     const error = useAppSelector((state) => state.auth.error)
-    const { loading } = useAppSelector(state => state.auth)
+    const { loading } = useAppSelector((state) => state.auth)
 
     const {
         register,
