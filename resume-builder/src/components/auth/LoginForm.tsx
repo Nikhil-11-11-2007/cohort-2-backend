@@ -26,6 +26,7 @@ export default function LoginForm() {
     const router = useRouter();
     const dispatch = useAppDispatch();
     const error = useAppSelector((state) => state.auth.error)
+    const { loading } = useAppSelector(state => state.auth)
 
     const {
         register,
@@ -45,7 +46,6 @@ export default function LoginForm() {
             const response = await loginApi(data);
 
             dispatch(setUser(response.data.user));
-
             router.push("/");
         } catch (error: any) {
             dispatch(
@@ -121,9 +121,10 @@ export default function LoginForm() {
 
                 <button
                     type="submit"
+                    disabled={loading}
                     className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700"
                 >
-                    Login
+                    {loading ? "Loading..." : "Login"}
                 </button>
             </form>
 
