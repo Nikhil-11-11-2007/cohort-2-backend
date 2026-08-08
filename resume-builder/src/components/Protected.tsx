@@ -18,7 +18,7 @@ export default function Protected({ children }: ProtectedProps) {
         if (!loading && !user) {
             router.push("/auth/login")
         }
-    }, [])
+    }, [loading, user, router])
 
     if (loading) {
         return <div>Loading...</div>

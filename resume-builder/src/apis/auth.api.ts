@@ -25,3 +25,9 @@ export const loginApi = async (
 
     return response.data;
 };
+
+export const getMe = async () => {
+    const response = await axiosInstance.get("/auth/get-me")
+
+    return response.data
+}
