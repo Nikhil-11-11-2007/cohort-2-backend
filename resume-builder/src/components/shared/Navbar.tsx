@@ -4,24 +4,24 @@ import Link from "next/link";
 import { useAppSelector } from "@/hooks/useAppSelector";
 
 export default function Navbar() {
-  const { user } = useAppSelector(
+  const { user, loading } = useAppSelector(
     (state) => state.auth
   );
 
-  console.log(user)
-
   return (
-    <nav className="flex items-center justify-between px-8 py-4 shadow-sm">
+    <nav className="flex items-center justify-between px-6 py-4">
       {/* Logo */}
       <Link
         href="/"
-        className="text-2xl font-bold text-blue-600"
+        className="text-xl font-bold"
       >
         ATS Resume Builder
       </Link>
 
       {/* Right Side */}
-      {user ? (
+      {loading ? (
+        <div className="h-9 w-32 animate-pulse rounded-lg bg-none" />
+      ) : user ? (
         <div className="flex items-center gap-4">
           <span className="font-medium text-gray-700">
             Hi, {user.name}
