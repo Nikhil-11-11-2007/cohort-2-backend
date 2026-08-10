@@ -13,7 +13,7 @@ export default function Navbar() {
       {/* Logo */}
       <Link
         href="/"
-        className="text-xl font-bold"
+        className="text-xl font-bold text-gray-950"
       >
         ATS Resume Builder
       </Link>
