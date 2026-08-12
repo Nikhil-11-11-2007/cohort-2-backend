@@ -2,12 +2,18 @@ import LoginForm from "@/components/auth/LoginForm";
 
 export default function LoginPage() {
     return (
-        <main className="min-h-screen flex justify-center items-center">
-            <div className="w-full max-w-md">
-                <h1 className="text-3xl font-bold mb-3">
-                    Login
-                </h1>
+        <main 
+            className="min-h-screen flex items-center justify-center p-4 relative z-10 bg-[#f7f9fb]"
+            style={{ 
+                backgroundImage: "radial-gradient(#e0e3e5 1px, transparent 1px)", 
+                backgroundSize: "24px 24px" 
+            }}
+        >
+            {/* Decorative Background Orbs */}
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl -z-10 mix-blend-multiply pointer-events-none"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-600/10 rounded-full blur-3xl -z-10 mix-blend-multiply pointer-events-none"></div>
 
+            <div className="w-full w-full z-10">
                 <LoginForm />
             </div>
         </main>
