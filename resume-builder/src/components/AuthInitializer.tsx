@@ -13,7 +13,6 @@ export default function AuthInitializer() {
         const currentUser = async () => {
             try {
                 dispatch(setAuthLoading(true))
-
                 const response = await getMe()
                 if(response.success){
                     dispatch(setUser(response.data.user))
@@ -22,19 +21,14 @@ export default function AuthInitializer() {
                 }
 
             } catch (error) {
-
                 dispatch(setUser(null))
                 dispatch(setAuthError("Unauthorized"))
 
             } finally {
                 dispatch(setAuthLoading(false))
             }
-            
         }
-
         currentUser()
-
-
     }, [dispatch])
 
     return null

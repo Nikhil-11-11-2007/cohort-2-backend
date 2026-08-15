@@ -11,23 +11,20 @@ import { ArrowRight, FileText, Plus } from "lucide-react";
 export default function DashboardPage() {
     const router = useRouter();
 
-    const handleCreateResume =
-        async () => {
-            try {
-                const response =
-                    await createResumeApi();
+    const handleCreateResume = async () => {
+        try {
+            const response = await createResumeApi();
+            const resumeId = response.data._id;
 
-                const resumeId = response.data._id;
+            console.log(resumeId, response);
 
-                console.log(resumeId);
-
-                router.push(
-                    `/resume/${resumeId}`
-                );
-            } catch (error) {
-                console.log(error);
-            }
-        };
+            router.push(
+                `/resume/${resumeId}`
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <Protected>
@@ -54,13 +51,13 @@ export default function DashboardPage() {
                             </div>
 
                             {/* Create Resume Button */}
-                            <Link
-                                href="#"
+                            <button
+                                onClick={handleCreateResume}
                                 className="inline-flex w-fit items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-medium text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md"
                             >
                                 <Plus size={20} />
                                 Create New Resume
-                            </Link>
+                            </button>
                         </div>
                     </section>
 
@@ -147,9 +144,9 @@ export default function DashboardPage() {
                             </div>
 
                             {/* Create New Resume Card */}
-                            <Link
-                                href="#"
-                                className="group flex min-h-[245px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-white p-5 text-center transition hover:border-blue-500 hover:bg-blue-50/40"
+                            <button
+                                onClick={handleCreateResume}
+                                className="group flex min-h-[245px] w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-white p-5 text-center transition hover:border-blue-500 hover:bg-blue-50/40"
                             >
                                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition group-hover:scale-110">
                                     <Plus size={28} />
@@ -162,7 +159,7 @@ export default function DashboardPage() {
                                 <p className="mt-2 max-w-xs text-sm text-gray-500">
                                     Start building your next ATS-friendly resume.
                                 </p>
-                            </Link>
+                            </button>
                         </div>
                     </section>
                 </div>
