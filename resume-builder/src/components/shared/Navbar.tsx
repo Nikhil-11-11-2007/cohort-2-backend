@@ -4,12 +4,10 @@ import Link from "next/link";
 import { useAppSelector } from "@/hooks/useAppSelector";
 
 export default function Navbar() {
-  const { user, loading } = useAppSelector(
-    (state) => state.auth
-  );
+  const { user } = useAppSelector((state) => state.auth);
 
   return (
-    <nav className="flex items-center bg-white justify-between px-6 py-4">
+    <nav className="flex items-center justify-between bg-white px-6 py-4">
       {/* Logo */}
       <Link
         href="/"
@@ -19,9 +17,7 @@ export default function Navbar() {
       </Link>
 
       {/* Right Side */}
-      {loading ? (
-        <div className="h-9 w-32 animate-pulse rounded-lg bg-none" />
-      ) : user ? (
+      {user ? (
         <div className="flex items-center gap-4">
           <span className="font-medium text-gray-700">
             Hi, {user.name}
