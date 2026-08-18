@@ -1,20 +1,21 @@
 "use client";
 
-import { getResumeApi } from "@/apis/resume.api";
+import { getResumeApi, updateResumeApi } from "@/apis/resume.api";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { setResume, setResumeError, setResumeLoading } from "@/redux/slices/resumeSlice";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  resumeSchema,
+  ResumeFormData,
+} from "@/schemas/resume.schema"
+import PersonalInfoStep from "./PersonalInfoStep";
 
 interface ResumeBuilderProps {
   resumeId: string;
 }
 
-import {
-  resumeSchema,
-  ResumeFormData,
-} from "@/schemas/resume.schema"
 
 export default function ResumeBuilder({
   resumeId,
@@ -22,19 +23,13 @@ export default function ResumeBuilder({
 
   const dispatch = useAppDispatch()
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    watch,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm<ResumeFormData>({
+  const methods = useForm<ResumeFormData>({
     resolver: zodResolver(resumeSchema),
+
     defaultValues: {
       title: "",
       summary: "",
+
       personalInfo: {
         fullname: "",
         email: "",
@@ -44,6 +39,7 @@ export default function ResumeBuilder({
         linkedIn: "",
         portfolio: "",
       },
+
       education: [],
       workExperience: [],
       projects: [],
@@ -61,7 +57,7 @@ export default function ResumeBuilder({
         if (response.success) {
           dispatch(setResume(response.data))
 
-          reset(response.data)
+          methods.reset(response.data)
 
           console.log(response.data)
         }
@@ -72,13 +68,45 @@ export default function ResumeBuilder({
       }
     }
     fetchResume()
-  }, [resumeId, dispatch, reset])
+  }, [resumeId, dispatch, methods])
+
+  const onSubmit = async (data: ResumeFormData) => {
+    try {
+
+      const response = await updateResumeApi(resumeId, data)
+
+      console.log(response, "Resume updated")
+
+    } catch (error) {
+
+      console.log(error, "Error in updating resume")
+
+    }
+  }
 
 
 
-  return <div>
+  return <FormProvider {...methods}>
+    <main className="min-h-screen bg-gray-50 p-10">
 
-    <h1>resume id: {resumeId}</h1>
+      <h1 className="mb-8 text-3xl font-bold">
+        Resume Builder
+      </h1>
 
-  </div>
+      <form onSubmit={methods.handleSubmit(onSubmit)}>
+
+        {/* Resume components yahan aayenge */}
+        <PersonalInfoStep />
+
+        <button
+          type="submit"
+          className="rounded-lg bg-blue-600 px-5 py-3 text-white"
+        >
+          Save Resume
+        </button>
+
+      </form>
+
+    </main>
+  </FormProvider>
 }
