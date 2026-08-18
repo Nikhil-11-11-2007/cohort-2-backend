@@ -10,10 +10,10 @@ export default function PersonalInfoStep() {
     } = useFormContext<ResumeFormData>();
 
     return (
-        <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-gray-200 bg-white text-black p-6 shadow-sm">
             {/* Header */}
             <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-gray-700">
                     Personal Information
                 </h2>
 
@@ -29,7 +29,7 @@ export default function PersonalInfoStep() {
                 <div>
                     <label
                         htmlFor="fullname"
-                        className="mb-2 block text-sm font-medium text-gray-700"
+                        className="mb-2 block text-sm font-medium text-gray-900"
                     >
                         Full Name
                     </label>

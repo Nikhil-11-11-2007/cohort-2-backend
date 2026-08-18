@@ -11,6 +11,7 @@ import {
   ResumeFormData,
 } from "@/schemas/resume.schema"
 import PersonalInfoStep from "./PersonalInfoStep";
+import SummaryStep from "./SummaryStep";
 
 interface ResumeBuilderProps {
   resumeId: string;
@@ -97,6 +98,8 @@ export default function ResumeBuilder({
 
         {/* Resume components yahan aayenge */}
         <PersonalInfoStep />
+
+        <SummaryStep />
 
         <button
           type="submit"
