@@ -12,6 +12,7 @@ import {
 } from "@/schemas/resume.schema"
 import PersonalInfoStep from "./PersonalInfoStep";
 import SummaryStep from "./SummaryStep";
+import EducationStep from "./EducationStep";
 
 interface ResumeBuilderProps {
   resumeId: string;
@@ -100,6 +101,8 @@ export default function ResumeBuilder({
         <PersonalInfoStep />
 
         <SummaryStep />
+
+        <EducationStep />
 
         <button
           type="submit"
