@@ -14,6 +14,7 @@ import PersonalInfoStep from "./PersonalInfoStep";
 import SummaryStep from "./SummaryStep";
 import EducationStep from "./EducationStep";
 import ExperienceStep from "./ExperienceStep";
+import ProjectsStep from "./ProjectsStep";
 
 interface ResumeBuilderProps {
   resumeId: string;
@@ -107,6 +108,8 @@ export default function ResumeBuilder({
 
         <ExperienceStep />
 
+        <ProjectsStep />
+        
         <button
           type="submit"
           className="rounded-lg bg-blue-600 px-5 py-3 text-white"
