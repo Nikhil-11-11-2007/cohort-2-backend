@@ -13,6 +13,7 @@ import {
 import PersonalInfoStep from "./PersonalInfoStep";
 import SummaryStep from "./SummaryStep";
 import EducationStep from "./EducationStep";
+import ExperienceStep from "./ExperienceStep";
 
 interface ResumeBuilderProps {
   resumeId: string;
@@ -103,6 +104,8 @@ export default function ResumeBuilder({
         <SummaryStep />
 
         <EducationStep />
+
+        <ExperienceStep />
 
         <button
           type="submit"
