@@ -40,7 +40,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ re
 
         await connectDB()
 
-        const user = await getCurrentUser()
+        const userId = await getCurrentUser()
 
         const body = await req.json()
 
@@ -49,7 +49,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ re
         const updatedResume = await ResumeModel.findOneAndUpdate(
             {
                 _id: resumeId,
-                user_id: user.userId,
+                user_id: userId,
             },
             {
                 $set: body,
