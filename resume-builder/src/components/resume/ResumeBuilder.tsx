@@ -15,6 +15,7 @@ import SummaryStep from "./SummaryStep";
 import EducationStep from "./EducationStep";
 import ExperienceStep from "./ExperienceStep";
 import ProjectsStep from "./ProjectsStep";
+import SkillsStep from "./SkillsStep";
 
 interface ResumeBuilderProps {
   resumeId: string;
@@ -97,6 +98,29 @@ export default function ResumeBuilder({
         Resume Builder
       </h1>
 
+      <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <label
+          htmlFor="title"
+          className="mb-2 block text-sm font-medium text-gray-700"
+        >
+          Resume Title
+        </label>
+
+        <input
+          id="title"
+          type="text"
+          placeholder="e.g. Frontend Developer Resume"
+          {...methods.register("title")}
+          className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+
+        {methods.formState.errors.title && (
+          <p className="mt-1 text-sm text-red-500">
+            {methods.formState.errors.title.message}
+          </p>
+        )}
+      </div>
+
       <form onSubmit={methods.handleSubmit(onSubmit)}>
 
         {/* Resume components yahan aayenge */}
@@ -109,7 +133,9 @@ export default function ResumeBuilder({
         <ExperienceStep />
 
         <ProjectsStep />
-        
+
+        <SkillsStep />
+
         <button
           type="submit"
           className="rounded-lg bg-blue-600 px-5 py-3 text-white"
