@@ -8,13 +8,16 @@ import {
   setResumeLoading,
 } from "@/redux/slices/resumeSlice";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
 import {
   useForm,
   FormProvider,
 } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useRouter } from "next/navigation";
 
 import {
   resumeSchema,
@@ -37,7 +40,12 @@ interface ResumeBuilderProps {
 export default function ResumeBuilder({
   resumeId,
 }: ResumeBuilderProps) {
+
   const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const methods = useForm<ResumeFormData>({
     resolver: zodResolver(resumeSchema),
@@ -75,9 +83,9 @@ export default function ResumeBuilder({
         if (response.success) {
           dispatch(setResume(response.data));
 
-          // Backend ka data form mein set hoga
           methods.reset(response.data);
         }
+
       } catch (error: any) {
         dispatch(
           setResumeError(
@@ -85,32 +93,57 @@ export default function ResumeBuilder({
             "Cannot fetch resume"
           )
         );
+
       } finally {
         dispatch(setResumeLoading(false));
       }
     };
 
     fetchResume();
+
   }, [resumeId, dispatch, methods]);
 
   const onSubmit = async (
     data: ResumeFormData
   ) => {
     try {
+      setIsSaving(true);
+      setSaveError(null);
+
       const response = await updateResumeApi(
         resumeId,
         data
       );
 
-      console.log(
-        response,
-        "Resume updated"
-      );
-    } catch (error) {
-      console.log(
-        error,
-        "Error in updating resume"
-      );
+      if (response.success) {
+
+        // Redux mein latest resume update
+        dispatch(setResume(response.data));
+
+        // Form ko latest backend data se sync
+        methods.reset(response.data);
+
+        console.log(
+          response.message ||
+          "Resume saved successfully"
+        );
+
+        // Save successful hone ke baad Dashboard
+        router.push("/dashboard");
+      }
+
+    } catch (error: any) {
+
+      const message =
+        error?.response?.data?.message ||
+        "Error in updating resume";
+
+      setSaveError(message);
+
+      console.log(error, message);
+
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -133,15 +166,14 @@ export default function ResumeBuilder({
           onSubmit={methods.handleSubmit(onSubmit)}
           className="mx-auto max-w-[1600px]"
         >
-          {/* Main Layout */}
           <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(400px,0.8fr)]">
 
-            {/* ================= LEFT SIDE ================= */}
-            {/* Form */}
+            {/* LEFT SIDE */}
             <div className="space-y-6">
 
               {/* Resume Title */}
               <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+
                 <div className="mb-6">
                   <h2 className="text-xl font-bold text-gray-900">
                     Resume Details
@@ -169,56 +201,57 @@ export default function ResumeBuilder({
 
                 {methods.formState.errors.title && (
                   <p className="mt-1 text-sm text-red-500">
-                    {
-                      methods.formState.errors
-                        .title?.message
-                    }
+                    {methods.formState.errors.title.message}
                   </p>
                 )}
+
               </section>
 
-              {/* Personal Information */}
               <PersonalInfoStep />
 
-              {/* Summary */}
               <SummaryStep />
 
-              {/* Education */}
               <EducationStep />
 
-              {/* Experience */}
               <ExperienceStep />
 
-              {/* Projects */}
               <ProjectsStep />
 
-              {/* Skills */}
               <SkillsStep />
 
-              {/* Certifications */}
               <CertificationsStep />
 
               {/* Save Button */}
-              <div className="flex justify-end pb-10">
+              <div className="flex flex-col items-end gap-3 pb-10">
+
+                {saveError && (
+                  <p className="text-sm text-red-500">
+                    {saveError}
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  className="rounded-xl bg-blue-600 px-6 py-3 font-medium text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md"
+                  disabled={isSaving}
+                  className="rounded-xl bg-blue-600 px-6 py-3 font-medium text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Save Resume
+                  {isSaving
+                    ? "Saving..."
+                    : "Save Resume"}
                 </button>
+
               </div>
 
             </div>
 
-            {/* ================= RIGHT SIDE ================= */}
-            {/* Live Resume Preview */}
+            {/* RIGHT SIDE */}
             <aside className="hidden xl:block">
               <ResumePreview />
             </aside>
 
           </div>
 
-          {/* Mobile / Tablet Preview */}
+          {/* Mobile Preview */}
           <div className="mt-8 xl:hidden">
             <h2 className="mb-4 text-xl font-bold text-gray-900">
               Resume Preview
