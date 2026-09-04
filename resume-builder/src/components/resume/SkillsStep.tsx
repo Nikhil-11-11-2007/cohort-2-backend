@@ -14,7 +14,6 @@ export default function SkillsStep() {
   } = useFormContext<ResumeFormData>();
 
   const [skillInput, setSkillInput] = useState("");
-
   const skills = watch("skills");
 
   const handleAddSkill = () => {
