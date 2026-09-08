@@ -9,7 +9,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ resu
 
         await connectDB()
 
-        const user = await getCurrentUser()
+        // const user = await getCurrentUser()
         const { resumeId } = await params;
 
         const resume = await ResumeModel.findOne({

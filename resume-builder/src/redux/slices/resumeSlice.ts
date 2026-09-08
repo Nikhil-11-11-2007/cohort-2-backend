@@ -6,6 +6,7 @@ const resumeSlice = createSlice({
 
     initialState: {
         resume: null as IResume | null,
+        AllResumes: [] as IResume[],
         loading: false,
         error: null as string | null,
     },
@@ -16,6 +17,13 @@ const resumeSlice = createSlice({
             action: PayloadAction<IResume | null>
         ) => {
             state.resume = action.payload;
+        },
+
+        setAllResumes: (
+            state,
+            action: PayloadAction<IResume[]>
+        ) => {
+            state.AllResumes = action.payload
         },
 
         setResumeLoading: (
@@ -38,6 +46,7 @@ export const {
     setResume,
     setResumeLoading,
     setResumeError,
+    setAllResumes   
 } = resumeSlice.actions;
 
 export default resumeSlice.reducer;

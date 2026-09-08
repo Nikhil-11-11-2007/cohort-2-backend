@@ -30,3 +30,8 @@ export const updateResumeApi = async (
 
     return response.data;
 };
+
+export const getAllResumesApi = async () => {
+  const response = await axiosInstance.get("/resume");
+  return response.data;
+};
