@@ -7,6 +7,7 @@ import Navbar from "@/components/shared/Navbar";
 import Protected from "@/components/Protected";
 import Link from "next/link";
 import { ArrowRight, FileText, Plus } from "lucide-react";
+import ResumeCard from "@/components/resume-cards/ResumeCard";
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -82,66 +83,11 @@ export default function DashboardPage() {
                         {/* Resume Cards */}
                         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                             {/* Resume Card 1 */}
-                            <div className="group rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-                                <div className="mb-5 flex items-start justify-between">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                                        <FileText size={24} />
-                                    </div>
-
-                                    <button className="text-gray-400 transition hover:text-gray-700">
-                                        •••
-                                    </button>
-                                </div>
-
-                                <h3 className="text-lg font-semibold text-gray-900">
-                                    Frontend Developer Resume
-                                </h3>
-
-                                <p className="mt-2 text-sm text-gray-500">
-                                    Updated 2 hours ago
-                                </p>
-
-                                <div className="mt-6">
-                                    <Link
-                                        href="#"
-                                        className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:border-blue-600 hover:text-blue-600"
-                                    >
-                                        Edit Resume
-                                        <ArrowRight size={16} />
-                                    </Link>
-                                </div>
-                            </div>
-
-                            {/* Resume Card 2 */}
-                            <div className="group rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-                                <div className="mb-5 flex items-start justify-between">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50 text-purple-600">
-                                        <FileText size={24} />
-                                    </div>
-
-                                    <button className="text-gray-400 transition hover:text-gray-700">
-                                        •••
-                                    </button>
-                                </div>
-
-                                <h3 className="text-lg font-semibold text-gray-900">
-                                    Full Stack Developer Resume
-                                </h3>
-
-                                <p className="mt-2 text-sm text-gray-500">
-                                    Updated yesterday
-                                </p>
-
-                                <div className="mt-6">
-                                    <Link
-                                        href="#"
-                                        className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:border-blue-600 hover:text-blue-600"
-                                    >
-                                        Edit Resume
-                                        <ArrowRight size={16} />
-                                    </Link>
-                                </div>
-                            </div>
+                            <ResumeCard
+                                id="6a8c25fe541d3edeed9d9f0b"
+                                title="Frontend Developer Resume"
+                                updatedAt="2 hours ago"
+                            />
 
                             {/* Create New Resume Card */}
                             <button
