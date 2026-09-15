@@ -1,16 +1,51 @@
 "use client";
 
-import { createResumeApi } from "@/apis/resume.api";
+import { createResumeApi, getAllResumesApi } from "@/apis/resume.api";
 import { useRouter } from "next/navigation";
 
 import Navbar from "@/components/shared/Navbar";
 import Protected from "@/components/Protected";
-import Link from "next/link";
-import { ArrowRight, FileText, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import ResumeCard from "@/components/resume-cards/ResumeCard";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { useEffect } from "react";
+import { setAllResumes, setResumeError, setResumeLoading } from "@/redux/slices/resumeSlice";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
 
 export default function DashboardPage() {
     const router = useRouter();
+
+    const dispatch = useAppDispatch();
+
+    const { AllResumes, loading, error } = useAppSelector(
+        (state) => state.resume
+    );
+
+    useEffect(() => {
+        const fetchAllResumes = async () => {
+            try {
+                dispatch(setResumeError(null));
+                dispatch(setResumeLoading(true));
+
+                const response = await getAllResumesApi();
+
+                if (response.success) {
+                    dispatch(setAllResumes(response.data));
+                }
+            } catch (error: any) {
+                dispatch(
+                    setResumeError(
+                        error?.response?.data?.message ||
+                        "Cannot fetch resumes"
+                    )
+                );
+            } finally {
+                dispatch(setResumeLoading(false));
+            }
+        };
+
+        fetchAllResumes();
+    }, [dispatch]);
 
     const handleCreateResume = async () => {
         try {
@@ -26,6 +61,7 @@ export default function DashboardPage() {
             console.log(error);
         }
     };
+
 
     return (
         <Protected>
@@ -83,11 +119,18 @@ export default function DashboardPage() {
                         {/* Resume Cards */}
                         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                             {/* Resume Card 1 */}
-                            <ResumeCard
-                                id="6a8c25fe541d3edeed9d9f0b"
-                                title="Frontend Developer Resume"
-                                updatedAt="2 hours ago"
-                            />
+                            {AllResumes.map((resume) => (
+                                <ResumeCard
+                                    key={resume._id}
+                                    id={resume._id!}
+                                    title={resume.title}
+                                    updatedAt={
+                                        resume.updatedAt
+                                            ? new Date(resume.updatedAt).toLocaleDateString()
+                                            : "N/A"
+                                    }
+                                />
+                            ))}
 
                             {/* Create New Resume Card */}
                             <button

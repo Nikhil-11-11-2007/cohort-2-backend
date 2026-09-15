@@ -5,7 +5,7 @@ import { ApiResponse } from "@/types/api.types";
 import { NextResponse } from "next/server";
 
 
-async function GET() {
+export async function GET() {
     try {
 
         await connectDB()
