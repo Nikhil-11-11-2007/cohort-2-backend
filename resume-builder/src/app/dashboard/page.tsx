@@ -17,7 +17,7 @@ export default function DashboardPage() {
 
     const dispatch = useAppDispatch();
 
-    const { AllResumes, loading, error } = useAppSelector(
+    const { AllResumes } = useAppSelector(
         (state) => state.resume
     );
 
@@ -112,7 +112,7 @@ export default function DashboardPage() {
                             </div>
 
                             <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600">
-                                2 Resumes
+                                {`${AllResumes.length} Resume`}
                             </span>
                         </div>
 

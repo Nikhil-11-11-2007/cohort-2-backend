@@ -3,6 +3,7 @@
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react"
+import Loader from "./shared/loader";
 
 interface ProtectedProps {
     children: React.ReactNode;
@@ -21,7 +22,7 @@ export default function Protected({ children }: ProtectedProps) {
     }, [loading, user, router])
 
     if (loading) {
-        return <div>Loading...</div>
+        return <Loader />
     }
 
     if (!user) {
