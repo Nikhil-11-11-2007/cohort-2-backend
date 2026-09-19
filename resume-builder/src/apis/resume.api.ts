@@ -32,6 +32,11 @@ export const updateResumeApi = async (
 };
 
 export const getAllResumesApi = async () => {
-  const response = await axiosInstance.get("/resume");
-  return response.data;
+    const response = await axiosInstance.get("/resume");
+    return response.data;
+};
+
+export const deleteResumeApi = async (resumeId: string) => {
+    const response = await axiosInstance.delete(`/resume/${resumeId}`);
+    return response.data;
 };

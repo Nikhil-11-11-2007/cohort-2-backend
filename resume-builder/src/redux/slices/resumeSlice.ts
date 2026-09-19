@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IResume } from "@/types/resume.types";
+import { resume } from "react-dom/server";
 
 const resumeSlice = createSlice({
     name: "resume",
@@ -39,6 +40,15 @@ const resumeSlice = createSlice({
         ) => {
             state.error = action.payload;
         },
+
+        deleteResume: (
+            state,
+            action: PayloadAction<string>
+        ) => {
+            state.AllResumes = state.AllResumes.filter(
+                (resume) => resume._id !== action.payload
+            )
+        }
     },
 });
 
@@ -46,7 +56,8 @@ export const {
     setResume,
     setResumeLoading,
     setResumeError,
-    setAllResumes   
+    setAllResumes,
+    deleteResume 
 } = resumeSlice.actions;
 
 export default resumeSlice.reducer;
