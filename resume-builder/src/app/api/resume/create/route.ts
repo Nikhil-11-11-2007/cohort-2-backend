@@ -11,6 +11,16 @@ export async function POST(req: NextRequest) {
 
         const userId = await getCurrentUser()
 
+        if (!userId) {
+            return NextResponse.json<ApiResponse>(
+                {
+                    success: false,
+                    message: "Unauthorized",
+                },
+                { status: 401 }
+            )
+        }
+
         const newResume = await ResumeModel.create({
             user_id: userId,
             title: "",

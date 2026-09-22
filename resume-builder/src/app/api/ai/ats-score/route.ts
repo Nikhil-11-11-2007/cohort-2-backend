@@ -1,21 +1,36 @@
 import { generateAiContent } from "@/lib/gemini";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { ApiResponse } from "@/types/api.types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-    try {
+  try {
 
-        const body = await req.json()
+    const userId = await getCurrentUser();
 
-        const { resumeText } = body
-
-        if (!resumeText) {
-            return NextResponse.json<ApiResponse>({
-                success: false, message: "Missing fields"
-            }, { status: 400 })
+    if (!userId) {
+      return NextResponse.json<ApiResponse>(
+        {
+          success: false,
+          message: "Unauthorized",
+        },
+        {
+          status: 401,
         }
+      );
+    }
 
-        const prompt = `
+    const body = await req.json()
+
+    const { resumeText } = body
+
+    if (!resumeText) {
+      return NextResponse.json<ApiResponse>({
+        success: false, message: "Missing fields"
+      }, { status: 400 })
+    }
+
+    const prompt = `
       You are an expert ATS (Applicant Tracking System) evaluator, technical recruiter, and resume reviewer.
       
       Analyze the resume content below and provide an ATS assessment.
@@ -77,18 +92,18 @@ export async function POST(req: NextRequest) {
       `;
 
 
-        const result = await generateAiContent(prompt)
+    const result = await generateAiContent(prompt)
 
-        const AtsScore = result
+    const AtsScore = result
 
-        return NextResponse.json<ApiResponse>({
-            success: true, message: "AtsScore created", data: { AtsScore }
-        }, { status: 201 })
+    return NextResponse.json<ApiResponse>({
+      success: true, message: "AtsScore created", data: { AtsScore }
+    }, { status: 201 })
 
-    } catch (error) {
-        console.log("error in ats-Score api", error)
-        return NextResponse.json<ApiResponse>({
-            success: false, message: "Something went wrong"
-        }, { status: 500 })
-    }
+  } catch (error) {
+    console.log("error in ats-Score api", error)
+    return NextResponse.json<ApiResponse>({
+      success: false, message: "Something went wrong"
+    }, { status: 500 })
+  }
 }

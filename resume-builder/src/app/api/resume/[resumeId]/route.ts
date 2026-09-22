@@ -4,34 +4,65 @@ import ResumeModel from "@/models/Resume.model";
 import { ApiResponse } from "@/types/api.types";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ resumeId: string }> }) {
+export async function GET({ params }: { params: Promise<{ resumeId: string }> }) {
     try {
+        await connectDB();
 
-        await connectDB()
+        const userId = await getCurrentUser();
 
-        // const user = await getCurrentUser()
+        if (!userId) {
+            return NextResponse.json<ApiResponse>(
+                {
+                    success: false,
+                    message: "Unauthorized",
+                },
+                {
+                    status: 401,
+                }
+            );
+        }
+
         const { resumeId } = await params;
 
         const resume = await ResumeModel.findOne({
             _id: resumeId,
-            // user_id: user.userId
-        })
+            user_id: userId,
+        });
 
         if (!resume) {
-            return NextResponse.json<ApiResponse>({
-                success: false, message: "Resume not found"
-            }, { status: 404 })
+            return NextResponse.json<ApiResponse>(
+                {
+                    success: false,
+                    message: "Resume not found",
+                },
+                {
+                    status: 404,
+                }
+            );
         }
 
-        return NextResponse.json<ApiResponse>({
-            success: true, message: "Resume fetched successfully", data: resume
-        }, { status: 200 })
-
+        return NextResponse.json<ApiResponse>(
+            {
+                success: true,
+                message: "Resume fetched successfully",
+                data: resume,
+            },
+            {
+                status: 200,
+            }
+        );
     } catch (error) {
-        console.log("error in get resume api", error)
-        return NextResponse.json<ApiResponse>({
-            success: false, message: "Something went wrong"
-        }, { status: 500 })
+        console.log("error in get resume api", error);
+
+        return NextResponse.json<ApiResponse>(
+            {
+                success: false,
+                message: "Something went wrong",
+            },
+            {
+                status: 500,
+            }
+        );
     }
 }
 
@@ -41,6 +72,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ re
         await connectDB()
 
         const userId = await getCurrentUser()
+
+        if (!userId) {
+            return NextResponse.json<ApiResponse>(
+                {
+                    success: false,
+                    message: "Unauthorized",
+                },
+                { status: 401 }
+            )
+        }
 
         const body = await req.json()
 
@@ -62,7 +103,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ re
 
         if (!updatedResume) {
             return NextResponse.json<ApiResponse>({
-                success: false, message: "Failed to updated resume"
+                success: false, message: "Failed to update resume"
             }, { status: 400 })
         }
 
@@ -78,15 +119,21 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ re
     }
 }
 
-export async function DELETE(
-    req: NextRequest,
-    { params }: { params: Promise<{ resumeId: string }> }
-) {
+export async function DELETE({ params }: { params: Promise<{ resumeId: string }> }) {
 
     try {
 
         await connectDB()
         const userId = await getCurrentUser();
+        if (!userId) {
+            return NextResponse.json<ApiResponse>(
+                {
+                    success: false,
+                    message: "Unauthorized",
+                },
+                { status: 401 }
+            )
+        }
         const { resumeId } = await params;
         const deleteResume = await ResumeModel.findOneAndDelete({
             _id: resumeId,
@@ -121,7 +168,7 @@ export async function DELETE(
                 success: false,
                 message: "something Went wrong"
             },
-            {status: 500}
+            { status: 500 }
         )
     }
 }

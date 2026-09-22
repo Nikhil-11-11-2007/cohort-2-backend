@@ -2,16 +2,25 @@ import { cookies } from "next/headers";
 import { verifyToken } from "./jwt";
 
 export async function getCurrentUser() {
-    const cookiStore = await cookies()
+  try {
+    const cookiStore = await cookies();
 
-    const token = cookiStore.get('token')?.value
+    const token = cookiStore.get("token")?.value;
 
-    if (!token) throw new Error("Token not found")
+    if (!token) {
+      return null;
+    }
 
-    const decode = verifyToken(token)
+    const decode = verifyToken(token);
 
-    if(!decode) throw new Error("unauthorize")
+    if (!decode) {
+      return null;
+    }
 
-    return decode.userId
+    return decode.userId;
+  } catch (error) {
+    console.log("Authentication error:", error);
 
+    return null;
+  }
 }

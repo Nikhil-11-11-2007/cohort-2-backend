@@ -1,10 +1,25 @@
 import { generateAiContent } from "@/lib/gemini";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { GenerateExperienceDescriptionBody } from "@/types/ai.types";
 import { ApiResponse } from "@/types/api.types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     try {
+
+        const userId = await getCurrentUser();
+
+        if (!userId) {
+            return NextResponse.json<ApiResponse>(
+                {
+                    success: false,
+                    message: "Unauthorized",
+                },
+                {
+                    status: 401,
+                }
+            );
+        }
 
         const body: GenerateExperienceDescriptionBody = await req.json()
 

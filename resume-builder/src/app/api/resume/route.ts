@@ -11,6 +11,16 @@ export async function GET() {
         await connectDB()
         const userId = await getCurrentUser()
 
+        if (!userId) {
+            return NextResponse.json<ApiResponse>(
+                {
+                    success: false,
+                    message: "Unauthorized",
+                },
+                { status: 401 }
+            )
+        }
+
         const resumes = await ResumeModel.find({ user_id: userId }).sort({ updatedAt: -1 })
 
         if (!resumes) {
