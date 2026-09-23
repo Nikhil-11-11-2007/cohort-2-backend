@@ -56,11 +56,14 @@ export default function CertificationsStep() {
 
   return (
     <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-      
+
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-xl font-bold text-gray-900">
           Certifications
+          <span className="ml-2 text-sm font-normal text-gray-400">
+            (Optional)
+          </span>
         </h2>
 
         <p className="mt-1 text-sm text-gray-500">
