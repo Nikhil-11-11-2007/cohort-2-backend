@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IResume } from "@/types/resume.types";
-import { resume } from "react-dom/server";
 
 const resumeSlice = createSlice({
     name: "resume",

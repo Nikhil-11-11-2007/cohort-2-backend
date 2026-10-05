@@ -1,6 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { Sparkles, X } from "lucide-react";
+
+import { ResumeFormData } from "@/schemas/resume.schema";
+import { generateSummaryApi } from "@/apis/ai.api";
 
 interface GenerateSummaryModalProps {
     onClose: () => void;
@@ -9,6 +14,56 @@ interface GenerateSummaryModalProps {
 export default function GenerateSummaryModal({
     onClose,
 }: GenerateSummaryModalProps) {
+    const { setValue } = useFormContext<ResumeFormData>();
+
+    const [jobTitle, setJobTitle] = useState("");
+    const [skillsInput, setSkillsInput] = useState("");
+    const [experienceLevel, setExperienceLevel] = useState<"Fresher" | "Mid-Level" | "Senior-Level">("Fresher");
+
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [aiError, setAiError] = useState<string | null>(null);
+
+    const handleGenerateSummary = async () => {
+        const skills = skillsInput
+            .split(",")
+            .map((skill) => skill.trim())
+            .filter(Boolean);
+
+        if (!jobTitle.trim() || skills.length === 0) {
+            setAiError("Please enter a job title and at least one skill.");
+            return;
+        }
+
+        try {
+            setIsGenerating(true);
+            setAiError(null);
+
+            const response = await generateSummaryApi({
+                jobTitle: jobTitle.trim(),
+                skills,
+                experienceLevel,
+            });
+
+            if (!response.success) {
+                setAiError(response.message || "Failed to generate summary.");
+                return;
+            }
+
+            setValue("summary", response.data.summary, {
+                shouldValidate: true,
+                shouldDirty: true,
+            });
+
+            onClose();
+        } catch (error) {
+            console.error("Generate summary error:", error);
+
+            setAiError("Something went wrong while generating the summary.");
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
             <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
@@ -52,8 +107,9 @@ export default function GenerateSummaryModal({
                         <input
                             id="jobTitle"
                             type="text"
+                            value={jobTitle}
+                            onChange={(e) => setJobTitle(e.target.value)}
                             placeholder="e.g. Full Stack Developer"
-                            required
                             className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
                         />
                     </div>
@@ -70,8 +126,9 @@ export default function GenerateSummaryModal({
                         <input
                             id="skills"
                             type="text"
+                            value={skillsInput}
+                            onChange={(e) => setSkillsInput(e.target.value)}
                             placeholder="e.g. React, Node.js, MongoDB"
-                            required
                             className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
                         />
 
@@ -91,8 +148,15 @@ export default function GenerateSummaryModal({
 
                         <select
                             id="experienceLevel"
-                            required
-                            defaultValue="Fresher"
+                            value={experienceLevel}
+                            onChange={(e) =>
+                                setExperienceLevel(
+                                    e.target.value as
+                                    | "Fresher"
+                                    | "Mid-Level"
+                                    | "Senior-Level"
+                                )
+                            }
                             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
                         >
                             <option value="Fresher">Fresher</option>
@@ -101,22 +165,32 @@ export default function GenerateSummaryModal({
                         </select>
                     </div>
 
+                    {/* Error */}
+                    {aiError && (
+                        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+                            {aiError}
+                        </p>
+                    )}
+
                     {/* Modal Actions */}
                     <div className="flex justify-end gap-3 border-t border-gray-100 pt-5">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                            disabled={isGenerating}
+                            className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             Cancel
                         </button>
 
                         <button
                             type="button"
-                            className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700 active:scale-[0.97]"
+                            onClick={handleGenerateSummary}
+                            disabled={isGenerating}
+                            className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-purple-700 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-70"
                         >
                             <Sparkles size={16} />
-                            Generate Summary
+                            {isGenerating ? "Generating..." : "Generate Summary"}
                         </button>
                     </div>
                 </div>
