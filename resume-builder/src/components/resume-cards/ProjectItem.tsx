@@ -2,23 +2,24 @@
 
 import { useFormContext } from "react-hook-form";
 import { ResumeFormData } from "@/schemas/resume.schema";
-import { Trash2 } from "lucide-react";
+import { Sparkles, Trash2 } from "lucide-react";
+import { useState } from "react";
+import GenerateProjectDescriptionModal from "../Ai-modals/ProjectDescriptionModal";
 
 interface ProjectItemProps {
   index: number;
   onRemove: () => void;
 }
 
-export default function ProjectItem({
-  index,
-  onRemove,
-}: ProjectItemProps) {
+export default function ProjectItem({ index, onRemove, }: ProjectItemProps) {
   const {
     register,
     watch,
     setValue,
     formState: { errors },
   } = useFormContext<ResumeFormData>();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const techStack = watch(`projects.${index}.techStack`);
 
@@ -100,6 +101,16 @@ export default function ProjectItem({
             </p>
           )}
         </div>
+
+        {/* AI Button */}
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+          className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-purple-700 active:scale-[0.97]"
+        >
+          <Sparkles size={17} />
+          Generate Description
+        </button>
 
         {/* URLs */}
         <div className="grid gap-5 md:grid-cols-2">
@@ -197,8 +208,18 @@ export default function ProjectItem({
               {errors.projects[index].techStack.message}
             </p>
           )}
+
         </div>
       </div>
+
+      {/* AI Generate Description Modal */}
+      {isModalOpen && (
+        <GenerateProjectDescriptionModal
+          index={index}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
+
     </div>
   );
 }

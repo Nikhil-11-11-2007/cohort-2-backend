@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { ResumeFormData } from "@/schemas/resume.schema";
 import { Sparkles, X } from "lucide-react";
-import GenerateSummaryModal from "../resume-cards/GenerateSummaryModal";
+import GenerateSummaryModal from "../Ai-modals/GenerateSummaryModal";
 
 export default function SummaryStep() {
   const {

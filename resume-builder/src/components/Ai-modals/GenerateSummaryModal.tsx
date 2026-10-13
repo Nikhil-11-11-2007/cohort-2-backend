@@ -58,7 +58,7 @@ export default function GenerateSummaryModal({
         } catch (error) {
             console.error("Generate summary error:", error);
 
-            setAiError("Something went wrong while generating the summary.");
+            setAiError("Something went wrong while generating the summary. Please Try Again");
         } finally {
             setIsGenerating(false);
         }
