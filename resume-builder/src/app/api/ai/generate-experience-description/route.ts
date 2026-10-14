@@ -25,7 +25,13 @@ export async function POST(req: NextRequest) {
 
         const { experienceLevel, yearsOfExperience, techStack, jobRole } = body;
 
-        if (!experienceLevel || !jobRole || !techStack || !yearsOfExperience) {
+        if (
+            !experienceLevel ||
+            !jobRole ||
+            !techStack ||
+            !Number.isFinite(yearsOfExperience) ||
+            yearsOfExperience < 0
+        ) {
             return NextResponse.json<ApiResponse>({
                 success: false, message: "Missing fields"
             }, { status: 400 })
@@ -44,7 +50,7 @@ export async function POST(req: NextRequest) {
             
             Years of Experience:
             ${yearsOfExperience}
-            j
+
             Tech Stack:
             ${techStack}
             
@@ -85,7 +91,7 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         console.log("error in generate-Experience-description api", error)
         return NextResponse.json<ApiResponse>({
-            success: false, message: "Something went wrong"
+            success: false, message: "Something went wrong" + error
         }, { status: 500 })
     }
 }
