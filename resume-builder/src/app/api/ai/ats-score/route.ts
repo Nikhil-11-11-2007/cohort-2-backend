@@ -1,3 +1,4 @@
+import { handleApiError } from "@/lib/errors";
 import { generateAiContent } from "@/lib/gemini";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { ApiResponse } from "@/types/api.types";
@@ -101,9 +102,6 @@ export async function POST(req: NextRequest) {
     }, { status: 201 })
 
   } catch (error) {
-    console.log("error in ats-Score api", error)
-    return NextResponse.json<ApiResponse>({
-      success: false, message: "Something went wrong"
-    }, { status: 500 })
+    return handleApiError(error)
   }
 }

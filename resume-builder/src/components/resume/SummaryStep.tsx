@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { ResumeFormData } from "@/schemas/resume.schema";
-import { Sparkles} from "lucide-react";
+import { Sparkles } from "lucide-react";
 import GenerateSummaryModal from "../Ai-modals/GenerateSummaryModal";
 import { improveContentApi } from "@/apis/ai.api";
+import axios from "axios";
 
 export default function SummaryStep() {
   const {
@@ -54,7 +55,15 @@ export default function SummaryStep() {
       });
     } catch (error) {
       console.error("Improve summary error:", error);
-      setImproveError("Unable to improve summary. Please try again.");
+
+      if (axios.isAxiosError(error)) {
+        setImproveError(
+          error.response?.data?.message ||
+          "Unable to improve summary. Please try again."
+        );
+      } else {
+        setImproveError("Something went wrong. Please try again.");
+      }
     } finally {
       setIsImproving(false);
     }

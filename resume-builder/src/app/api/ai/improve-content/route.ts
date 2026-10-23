@@ -1,3 +1,4 @@
+import { handleApiError } from "@/lib/errors";
 import { generateAiContent } from "@/lib/gemini";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 import { ImproveContentBody } from "@/types/ai.types";
@@ -76,9 +77,6 @@ export async function POST(req: NextRequest) {
         }, { status: 201 })
 
     } catch (error) {
-        console.log("error in improve-Content api", error)
-        return NextResponse.json<ApiResponse>({
-            success: false, message: "Something went wrong" + error
-        }, { status: 500 })
+        return handleApiError(error)
     }
 }
