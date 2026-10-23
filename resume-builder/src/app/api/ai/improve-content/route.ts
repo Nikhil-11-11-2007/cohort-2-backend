@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         console.log("error in improve-Content api", error)
         return NextResponse.json<ApiResponse>({
-            success: false, message: "Something went wrong"
+            success: false, message: "Something went wrong" + error
         }, { status: 500 })
     }
 }

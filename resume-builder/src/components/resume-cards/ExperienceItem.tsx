@@ -176,7 +176,7 @@ export default function ExperienceItem({
                 <button
                     type="button"
                     onClick={() => setIsModalOpen(true)}
-                    className="inline-flex items-center gap-2 rounded-lg border border-purple-200 px-4 py-2.5 text-sm font-medium text-purple-700 transition hover:bg-purple-50"
+                    className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-purple-700 active:scale-[0.97]"
                 >
                     <Sparkles size={17} />
                     Generate with AI
