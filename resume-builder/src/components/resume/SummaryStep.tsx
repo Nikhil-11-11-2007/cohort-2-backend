@@ -5,8 +5,7 @@ import { useFormContext } from "react-hook-form";
 import { ResumeFormData } from "@/schemas/resume.schema";
 import { Sparkles } from "lucide-react";
 import GenerateSummaryModal from "../Ai-modals/GenerateSummaryModal";
-import { improveContentApi } from "@/apis/ai.api";
-import axios from "axios";
+import useImproveContent from "@/hooks/useImproveContent";
 
 export default function SummaryStep() {
   const {
@@ -17,56 +16,19 @@ export default function SummaryStep() {
   } = useFormContext<ResumeFormData>();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isImproving, setIsImproving] = useState(false);
-  const [improveError, setImproveError] = useState<string | null>(null);
   const summary = watch("summary") ?? "";
 
+  const { improveContent, isImproving, improveError} = useImproveContent()
+
   const handleImproveSummary = async () => {
-    if (!summary.trim()) {
-      setImproveError("Please enter a summary first.");
-      return;
-    }
+    const improvedContent = await improveContent(summary);
 
-    try {
-      setIsImproving(true);
-      setImproveError(null);
+    if (improvedContent === null) return;
 
-      const response = await improveContentApi({
-        content: summary,
-      });
-
-      if (!response.success) {
-        setImproveError(
-          response.message || "Failed to improve summary."
-        );
-        return;
-      }
-
-      const improvedContent = response.data?.improvedContent;
-
-      if (!improvedContent) {
-        setImproveError("AI did not return improved content.");
-        return;
-      }
-
-      setValue("summary", improvedContent, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-    } catch (error) {
-      console.error("Improve summary error:", error);
-
-      if (axios.isAxiosError(error)) {
-        setImproveError(
-          error.response?.data?.message ||
-          "Unable to improve summary. Please try again."
-        );
-      } else {
-        setImproveError("Something went wrong. Please try again.");
-      }
-    } finally {
-      setIsImproving(false);
-    }
+    setValue("summary", improvedContent, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   };
 
   return (

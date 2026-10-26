@@ -4,25 +4,42 @@
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Sparkles, Trash2 } from "lucide-react";
-
 import { ResumeFormData } from "@/schemas/resume.schema";
 import ExperienceDescriptionModal from "../Ai-modals/ExperienceDescriptionModal";
+import useImproveContent from "@/hooks/useImproveContent";
 
 interface ExperienceItemProps {
     index: number;
     onRemove: () => void;
 }
 
-export default function ExperienceItem({
-    index,
-    onRemove,
-}: ExperienceItemProps) {
-    const {
-        register,
-        formState: { errors },
-    } = useFormContext<ResumeFormData>();
+export default function ExperienceItem({ index, onRemove, }: ExperienceItemProps) {
+    const { register, setValue, watch, formState: { errors }, } = useFormContext<ResumeFormData>();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const {
+        improveContent,
+        isImproving,
+        improveError,
+    } = useImproveContent();
+
+    const description = watch(`workExperience.${index}.description`) ?? "";
+
+    const handleImproveDescription = async () => {
+        const improvedContent = await improveContent(description);
+
+        if (improvedContent === null) return;
+
+        setValue(
+            `workExperience.${index}.description`,
+            improvedContent,
+            {
+                shouldDirty: true,
+                shouldValidate: true,
+            }
+        );
+    };
 
     const experienceErrors = errors.workExperience?.[index];
 
@@ -171,8 +188,10 @@ export default function ExperienceItem({
                 </div>
             </div>
 
-            {/* AI Description Button */}
-            <div className="mt-4">
+
+            {/* AI Description Buttons */}
+            <div className="mt-4 flex flex-wrap gap-3">
+                {/* Generate new description */}
                 <button
                     type="button"
                     onClick={() => setIsModalOpen(true)}
@@ -181,7 +200,25 @@ export default function ExperienceItem({
                     <Sparkles size={17} />
                     Generate with AI
                 </button>
+
+                {/* Improve existing description */}
+                <button
+                    type="button"
+                    disabled={isImproving || !description.trim()}
+                    onClick={handleImproveDescription}
+                    className="inline-flex w-fit items-center gap-2 rounded-lg border border-purple-300 px-4 py-2.5 text-sm font-medium text-purple-700 transition hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                    <Sparkles size={17} />
+                    {isImproving ? "Improving..." : "Improve with AI"}
+                </button>
             </div>
+
+            {/* Display improvement errors */}
+            {improveError && (
+                <p className="mt-2 text-sm text-red-500" role="alert">
+                    {improveError}
+                </p>
+            )}
 
             {isModalOpen && (
                 <ExperienceDescriptionModal

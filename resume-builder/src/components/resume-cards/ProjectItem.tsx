@@ -1,12 +1,11 @@
 "use client";
 
-import { improveContentApi } from "@/apis/ai.api";
-import axios from "axios";
 import { useFormContext } from "react-hook-form";
 import { ResumeFormData } from "@/schemas/resume.schema";
 import { Sparkles, Trash2 } from "lucide-react";
 import { useState } from "react";
 import GenerateProjectDescriptionModal from "../Ai-modals/ProjectDescriptionModal";
+import useImproveContent from "@/hooks/useImproveContent";
 
 interface ProjectItemProps {
   index: number;
@@ -22,60 +21,21 @@ export default function ProjectItem({ index, onRemove, }: ProjectItemProps) {
   } = useFormContext<ResumeFormData>();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isImproving, setIsImproving] = useState(false);
-  const [improveError, setImproveError] = useState<string | null>(null);
 
   const description = watch(`projects.${index}.description`) ?? "";
 
+  const {
+    improveContent, isImproving, improveError } = useImproveContent();
+
   const handleImproveDescription = async () => {
-    if (!description.trim()) {
-      setImproveError("Please enter a project description first.");
-      return;
-    }
+    const improvedContent = await improveContent(description);
 
-    try {
-      setIsImproving(true);
-      setImproveError(null);
+    if (improvedContent === null) return;
 
-      const response = await improveContentApi({
-        content: description,
-      });
-
-      if (!response.success) {
-        setImproveError(
-          response.message || "Failed to improve project description."
-        );
-        return;
-      }
-
-      const improvedContent = response.data?.improvedContent;
-
-      if (!improvedContent) {
-        setImproveError("AI did not return improved content.");
-        return;
-      }
-
-      setValue(`projects.${index}.description`, improvedContent, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-    } catch (error) {
-      console.error("Improve project description error:", error);
-
-      if (axios.isAxiosError(error)) {
-        const message = error.response?.data?.message;
-
-        setImproveError(
-          typeof message === "string"
-            ? message
-            : "Unable to improve description. Please try again."
-        );
-      } else {
-        setImproveError("Something went wrong. Please try again.");
-      }
-    } finally {
-      setIsImproving(false);
-    }
+    setValue(`projects.${index}.description`, improvedContent, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   };
 
   const techStack = watch(`projects.${index}.techStack`);
