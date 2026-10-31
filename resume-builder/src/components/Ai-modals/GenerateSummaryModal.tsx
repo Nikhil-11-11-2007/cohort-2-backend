@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 import { Sparkles, X } from "lucide-react";
 
 import { ResumeFormData } from "@/schemas/resume.schema";
-import { generateSummaryApi } from "@/apis/ai.api";
+import useAI from "@/hooks/useAi";
 
 interface GenerateSummaryModalProps {
     onClose: () => void;
@@ -16,12 +16,15 @@ export default function GenerateSummaryModal({
 }: GenerateSummaryModalProps) {
     const { setValue } = useFormContext<ResumeFormData>();
 
+    const {
+        generateSummary,
+        summaryLoading: isGenerating,
+        summaryError: aiError,
+    } = useAI();
+
     const [jobTitle, setJobTitle] = useState("");
     const [skillsInput, setSkillsInput] = useState("");
     const [experienceLevel, setExperienceLevel] = useState<"Fresher" | "Mid-Level" | "Senior-Level">("Fresher");
-
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [aiError, setAiError] = useState<string | null>(null);
 
     const handleGenerateSummary = async () => {
         const skills = skillsInput
@@ -29,39 +32,22 @@ export default function GenerateSummaryModal({
             .map((skill) => skill.trim())
             .filter(Boolean);
 
-        if (!jobTitle.trim() || skills.length === 0) {
-            setAiError("Please enter a job title and at least one skill.");
-            return;
-        }
+        if (!jobTitle.trim() || skills.length === 0) return;
 
-        try {
-            setIsGenerating(true);
-            setAiError(null);
+        const summary = await generateSummary({
+            jobTitle: jobTitle.trim(),
+            skills,
+            experienceLevel,
+        });
 
-            const response = await generateSummaryApi({
-                jobTitle: jobTitle.trim(),
-                skills,
-                experienceLevel,
-            });
+        if (summary === null) return;
 
-            if (!response.success) {
-                setAiError(response.message || "Failed to generate summary.");
-                return;
-            }
+        setValue("summary", summary, {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
 
-            setValue("summary", response.data.summary, {
-                shouldValidate: true,
-                shouldDirty: true,
-            });
-
-            onClose();
-        } catch (error) {
-            console.error("Generate summary error:", error);
-
-            setAiError("Something went wrong while generating the summary. Please Try Again");
-        } finally {
-            setIsGenerating(false);
-        }
+        onClose();
     };
 
     return (

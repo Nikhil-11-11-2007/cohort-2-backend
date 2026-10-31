@@ -7,6 +7,7 @@ import { Sparkles, X } from "lucide-react";
 
 import { ResumeFormData } from "@/schemas/resume.schema";
 import { generateExperienceApi } from "@/apis/ai.api";
+import useAI from "@/hooks/useAi";
 
 interface ExperienceDescriptionModalProps {
     index: number;
@@ -24,13 +25,17 @@ export default function ExperienceDescriptionModal({
     const currentPosition = watch(`workExperience.${index}.position`);
 
     const [jobRole, setJobRole] = useState(currentPosition ?? "");
-    const [experienceLevel, setExperienceLevel] =
-        useState<ExperienceLevel>("Fresher");
+    const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel>("Fresher");
     const [yearsOfExperience, setYearsOfExperience] = useState("0");
     const [techStackInput, setTechStackInput] = useState("");
 
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [aiError, setAiError] = useState<string | null>(null);
+    const {
+        generateExperienceDescription,
+        experienceDescriptionLoading: isGenerating,
+        experienceDescriptionError: aiError,
+    } = useAI();
+
+    const [validationError, setValidationError] = useState<string | null>(null);
 
     const handleGenerateDescription = async () => {
         const technologies = techStackInput
@@ -40,13 +45,14 @@ export default function ExperienceDescriptionModal({
 
         const years = Number(yearsOfExperience);
 
+        // Input validation
         if (!jobRole.trim()) {
-            setAiError("Please enter your job role.");
+            setValidationError("Please enter your job role.");
             return;
         }
 
         if (!techStackInput.trim() || technologies.length === 0) {
-            setAiError("Please add at least one technology.");
+            setValidationError("Please add at least one technology.");
             return;
         }
 
@@ -55,53 +61,35 @@ export default function ExperienceDescriptionModal({
             !Number.isFinite(years) ||
             years < 0
         ) {
-            setAiError("Please enter a valid number of years.");
+            setValidationError("Please enter a valid number of years.");
             return;
         }
 
-        try {
-            setIsGenerating(true);
-            setAiError(null);
+        setValidationError(null);
 
-            const response = await generateExperienceApi({
-                jobRole: jobRole.trim(),
-                experienceLevel,
-                yearsOfExperience: years,
-                techStack: technologies,
-            });
+        // AI hook se API call
+        const description = await generateExperienceDescription({
+            jobRole: jobRole.trim(),
+            experienceLevel,
+            yearsOfExperience: years,
+            techStack: technologies,
+        });
 
-            if (!response.success) {
-                setAiError(
-                    response.message || "Failed to generate work experience description."
-                );
-                return;
-            }
+        // API fail hui toh hook null return karega
+        if (description === null) return;
 
-            const description = response.data?.workExperienceDescription;
+        // Successful result ko form mein save karein
+        setValue(`workExperience.${index}.position`, jobRole.trim(), {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
 
-            if (!description) {
-                setAiError("AI did not return a work experience description.");
-                return;
-            }
+        setValue(`workExperience.${index}.description`, description, {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
 
-            // Updated role aur generated description main form mein save karein.
-            setValue(`workExperience.${index}.position`, jobRole.trim(), {
-                shouldValidate: true,
-                shouldDirty: true,
-            });
-
-            setValue(`workExperience.${index}.description`, description, {
-                shouldValidate: true,
-                shouldDirty: true,
-            });
-
-            onClose();
-        } catch (error) {
-            console.error("Generate experience description error:", error);
-            setAiError("AI service is currently busy. Please try again in a few moments");
-        } finally {
-            setIsGenerating(false);
-        }
+        onClose();
     };
 
     return (
@@ -166,7 +154,7 @@ export default function ExperienceDescriptionModal({
                             value={jobRole}
                             onChange={(event) => {
                                 setJobRole(event.target.value);
-                                setAiError(null);
+                                setValidationError(null);
                             }}
                             disabled={isGenerating}
                             placeholder="Frontend Developer"
@@ -216,7 +204,7 @@ export default function ExperienceDescriptionModal({
                             value={yearsOfExperience}
                             onChange={(event) => {
                                 setYearsOfExperience(event.target.value);
-                                setAiError(null);
+                                setValidationError(null);
                             }}
                             disabled={isGenerating}
                             placeholder="0"
@@ -239,7 +227,7 @@ export default function ExperienceDescriptionModal({
                             value={techStackInput}
                             onChange={(event) => {
                                 setTechStackInput(event.target.value);
-                                setAiError(null);
+                                setValidationError(null);
                             }}
                             disabled={isGenerating}
                             placeholder="React, TypeScript, Node.js, MongoDB"
@@ -252,12 +240,12 @@ export default function ExperienceDescriptionModal({
                     </div>
 
                     {/* Error */}
-                    {aiError && (
+                    {(validationError || aiError) && (
                         <p
                             role="alert"
                             className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600"
                         >
-                            {aiError}
+                            {validationError || aiError}
                         </p>
                     )}
 
