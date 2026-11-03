@@ -7,6 +7,7 @@ import { Sparkles, X } from "lucide-react";
 
 import { ResumeFormData } from "@/schemas/resume.schema";
 import { generateProjectDescriptionApi } from "@/apis/ai.api";
+import useAI from "@/hooks/useAi";
 
 interface GenerateProjectDescriptionModalProps {
     index: number;
@@ -24,17 +25,19 @@ export default function GenerateProjectDescriptionModal({
     const currentTitle = watch(`projects.${index}.title`);
     const currentTechStack = watch(`projects.${index}.techStack`) ?? [];
 
-    // Modal ke andar editable fields ki local state
     const [projectTitle, setProjectTitle] = useState(currentTitle ?? "");
-    const [technologiesInput, setTechnologiesInput] = useState(
-        currentTechStack.join(", ")
-    );
+    const [technologiesInput, setTechnologiesInput] = useState(currentTechStack.join(", "));
 
-    const [experienceLevel, setExperienceLevel] =
-        useState<ExperienceLevel>("Fresher");
+    const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel>("Fresher");
 
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [aiError, setAiError] = useState<string | null>(null);
+    const {
+        generateProjectDescription,
+        projectDescriptionLoading: isGenerating,
+        projectDescriptionError: aiError,
+    } = useAI();
+
+    const [validationError, setValidationError] = useState<string | null>(null);
+
 
     const handleGenerateDescription = async () => {
         const technologies = technologiesInput
@@ -43,64 +46,41 @@ export default function GenerateProjectDescriptionModal({
             .filter(Boolean);
 
         if (!projectTitle.trim()) {
-            setAiError("Please enter the project title first.");
+            setValidationError("Please enter the project title first.");
             return;
         }
 
         if (technologies.length === 0) {
-            setAiError("Please add at least one technology first.");
+            setValidationError("Please add at least one technology first.");
             return;
         }
 
-        try {
-            setIsGenerating(true);
-            setAiError(null);
+        setValidationError(null);
 
-            const response = await generateProjectDescriptionApi({
-                projectTitle: projectTitle.trim(),
-                experienceLevel,
-                techStack: technologies.join(", "),
-            });
+        const description = await generateProjectDescription({
+            projectTitle: projectTitle.trim(),
+            experienceLevel,
+            techStack: technologies.join(", "),
+        });
 
-            if (!response.success) {
-                setAiError(
-                    response.message || "Failed to generate project description."
-                );
-                return;
-            }
+        if (description === null) return;
 
-            const description = response.data?.projectDescription;
+        setValue(`projects.${index}.title`, projectTitle.trim(), {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
 
-            if (!description) {
-                setAiError("AI did not return a project description.");
-                return;
-            }
+        setValue(`projects.${index}.techStack`, technologies, {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
 
-            // Updated values ko main React Hook Form mein save karein
-            setValue(`projects.${index}.title`, projectTitle.trim(), {
-                shouldValidate: true,
-                shouldDirty: true,
-            });
+        setValue(`projects.${index}.description`, description, {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
 
-            setValue(`projects.${index}.techStack`, technologies, {
-                shouldValidate: true,
-                shouldDirty: true,
-            });
-
-            setValue(`projects.${index}.description`, description, {
-                shouldValidate: true,
-                shouldDirty: true,
-            });
-
-            onClose();
-        } catch (error) {
-            console.error("Generate project description error:", error);
-            setAiError(
-                "Something went wrong while generating the project description. Please Try Again"
-            );
-        } finally {
-            setIsGenerating(false);
-        }
+        onClose();
     };
 
     return (
@@ -165,7 +145,7 @@ export default function GenerateProjectDescriptionModal({
                             value={projectTitle}
                             onChange={(event) => {
                                 setProjectTitle(event.target.value);
-                                setAiError(null);
+                                setValidationError(null);
                             }}
                             disabled={isGenerating}
                             placeholder="e.g. ATS Resume Builder"
@@ -188,7 +168,7 @@ export default function GenerateProjectDescriptionModal({
                             value={technologiesInput}
                             onChange={(event) => {
                                 setTechnologiesInput(event.target.value);
-                                setAiError(null);
+                                setValidationError(null);
                             }}
                             disabled={isGenerating}
                             placeholder="React, Next.js, TypeScript, MongoDB"
@@ -225,12 +205,12 @@ export default function GenerateProjectDescriptionModal({
                     </div>
 
                     {/* Error Message */}
-                    {aiError && (
+                    {(validationError || aiError) && (
                         <p
                             role="alert"
                             className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600"
                         >
-                            {aiError}
+                            {validationError || aiError}
                         </p>
                     )}
 

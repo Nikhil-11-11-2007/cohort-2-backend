@@ -6,7 +6,6 @@ import { useFormContext } from "react-hook-form";
 import { Sparkles, X } from "lucide-react";
 
 import { ResumeFormData } from "@/schemas/resume.schema";
-import { generateExperienceApi } from "@/apis/ai.api";
 import useAI from "@/hooks/useAi";
 
 interface ExperienceDescriptionModalProps {
@@ -16,10 +15,7 @@ interface ExperienceDescriptionModalProps {
 
 type ExperienceLevel = "Fresher" | "Junior" | "Mid-Level" | "Senior";
 
-export default function ExperienceDescriptionModal({
-    index,
-    onClose,
-}: ExperienceDescriptionModalProps) {
+export default function ExperienceDescriptionModal({ index, onClose, }: ExperienceDescriptionModalProps) {
     const { watch, setValue } = useFormContext<ResumeFormData>();
 
     const currentPosition = watch(`workExperience.${index}.position`);
@@ -38,11 +34,7 @@ export default function ExperienceDescriptionModal({
     const [validationError, setValidationError] = useState<string | null>(null);
 
     const handleGenerateDescription = async () => {
-        const technologies = techStackInput
-            .split(",")
-            .map((tech) => tech.trim())
-            .filter(Boolean);
-
+        const technologies = techStackInput.split(",").map((tech) => tech.trim()).filter(Boolean);
         const years = Number(yearsOfExperience);
 
         // Input validation
@@ -56,11 +48,7 @@ export default function ExperienceDescriptionModal({
             return;
         }
 
-        if (
-            yearsOfExperience.trim() === "" ||
-            !Number.isFinite(years) ||
-            years < 0
-        ) {
+        if (yearsOfExperience.trim() === "" || !Number.isFinite(years) || years < 0) {
             setValidationError("Please enter a valid number of years.");
             return;
         }

@@ -157,7 +157,6 @@ export default function useAI() {
                 );
             }
 
-            // Apni API ke actual response field name ke according adjust karein.
             const description = response.data?.workExperienceDescription;
 
             if (!description) {

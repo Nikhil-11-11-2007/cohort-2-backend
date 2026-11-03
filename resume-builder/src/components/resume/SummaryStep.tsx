@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 import { ResumeFormData } from "@/schemas/resume.schema";
 import { Sparkles } from "lucide-react";
 import GenerateSummaryModal from "../Ai-modals/GenerateSummaryModal";
-import useImproveContent from "@/hooks/useImproveContent";
+import useAI from "@/hooks/useAi";
 
 export default function SummaryStep() {
   const {
@@ -18,10 +18,14 @@ export default function SummaryStep() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const summary = watch("summary") ?? "";
 
-  const { improveContent, isImproving, improveError} = useImproveContent()
+  const {
+    improveContent,
+    improveContentLoading: isImproving,
+    improveContentError: improveError,
+  } = useAI();
 
   const handleImproveSummary = async () => {
-    const improvedContent = await improveContent(summary);
+    const improvedContent = await improveContent({ content: summary, });
 
     if (improvedContent === null) return;
 
