@@ -4,9 +4,7 @@
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Sparkles, X } from "lucide-react";
-
 import { ResumeFormData } from "@/schemas/resume.schema";
-import { generateProjectDescriptionApi } from "@/apis/ai.api";
 import useAI from "@/hooks/useAi";
 
 interface GenerateProjectDescriptionModalProps {

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -6,29 +5,30 @@ import { useFormContext } from "react-hook-form";
 import { Sparkles, Trash2 } from "lucide-react";
 import { ResumeFormData } from "@/schemas/resume.schema";
 import ExperienceDescriptionModal from "../Ai-modals/ExperienceDescriptionModal";
-import useImproveContent from "@/hooks/useImproveContent";
+import useAI from "@/hooks/useAi";
 
 interface ExperienceItemProps {
     index: number;
     onRemove: () => void;
 }
 
-export default function ExperienceItem({ index, onRemove, }: ExperienceItemProps) {
+export default function ExperienceItem({
+    index,
+    onRemove,
+}: ExperienceItemProps) {
     const { register, setValue, watch, formState: { errors }, } = useFormContext<ResumeFormData>();
-
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const {
         improveContent,
-        isImproving,
-        improveError,
-    } = useImproveContent();
+        improveContentLoading: isImproving,
+        improveContentError: improveError,
+    } = useAI();
 
     const description = watch(`workExperience.${index}.description`) ?? "";
 
     const handleImproveDescription = async () => {
-        const improvedContent = await improveContent(description);
-
+        const improvedContent = await improveContent({ content: description, });
         if (improvedContent === null) return;
 
         setValue(
@@ -188,7 +188,6 @@ export default function ExperienceItem({ index, onRemove, }: ExperienceItemProps
                 </div>
             </div>
 
-
             {/* AI Description Buttons */}
             <div className="mt-4 flex flex-wrap gap-3">
                 {/* Generate new description */}
@@ -220,6 +219,7 @@ export default function ExperienceItem({ index, onRemove, }: ExperienceItemProps
                 </p>
             )}
 
+            {/* AI Modal */}
             {isModalOpen && (
                 <ExperienceDescriptionModal
                     index={index}

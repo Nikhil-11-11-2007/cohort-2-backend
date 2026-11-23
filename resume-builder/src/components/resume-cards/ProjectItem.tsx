@@ -5,14 +5,14 @@ import { ResumeFormData } from "@/schemas/resume.schema";
 import { Sparkles, Trash2 } from "lucide-react";
 import { useState } from "react";
 import GenerateProjectDescriptionModal from "../Ai-modals/ProjectDescriptionModal";
-import useImproveContent from "@/hooks/useImproveContent";
+import useAI from "@/hooks/useAi";
 
 interface ProjectItemProps {
   index: number;
   onRemove: () => void;
 }
 
-export default function ProjectItem({ index, onRemove, }: ProjectItemProps) {
+export default function ProjectItem({ index, onRemove }: ProjectItemProps) {
   const {
     register,
     watch,
@@ -21,14 +21,16 @@ export default function ProjectItem({ index, onRemove, }: ProjectItemProps) {
   } = useFormContext<ResumeFormData>();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const description = watch(`projects.${index}.description`) ?? "";
 
   const {
-    improveContent, isImproving, improveError } = useImproveContent();
+    improveContent,
+    improveContentLoading: isImproving,
+    improveContentError: improveError,
+  } = useAI();
 
   const handleImproveDescription = async () => {
-    const improvedContent = await improveContent(description);
+    const improvedContent = await improveContent({ content: description, });
 
     if (improvedContent === null) return;
 
@@ -119,26 +121,31 @@ export default function ProjectItem({ index, onRemove, }: ProjectItemProps) {
           )}
         </div>
 
-        {/* AI Button */}
-        <button
-          type="button"
-          onClick={() => setIsModalOpen(true)}
-          className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-purple-700 active:scale-[0.97]"
-        >
-          <Sparkles size={17} />
-          Generate Description
-        </button>
+        {/* AI Buttons */}
+        <div className="flex flex-wrap gap-3">
+          {/* Generate Description */}
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-purple-700 active:scale-[0.97]"
+          >
+            <Sparkles size={17} />
+            Generate Description
+          </button>
 
-        <button
-          type="button"
-          disabled={isImproving || !description.trim()}
-          onClick={handleImproveDescription}
-          className="mt-4 ml-4 inline-flex w-fit items-center gap-2 rounded-lg border border-purple-300 px-4 py-2.5 text-sm font-medium text-purple-700 transition hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <Sparkles size={17} />
-          {isImproving ? "Improving..." : "Improve with AI"}
-        </button>
+          {/* Improve Description */}
+          <button
+            type="button"
+            disabled={isImproving || !description.trim()}
+            onClick={handleImproveDescription}
+            className="inline-flex w-fit items-center gap-2 rounded-lg border border-purple-300 px-4 py-2.5 text-sm font-medium text-purple-700 transition hover:bg-purple-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Sparkles size={17} />
+            {isImproving ? "Improving..." : "Improve with AI"}
+          </button>
+        </div>
 
+        {/* Improvement Error */}
         {improveError && (
           <p className="mt-2 text-sm text-red-500" role="alert">
             {improveError}
@@ -241,7 +248,6 @@ export default function ProjectItem({ index, onRemove, }: ProjectItemProps) {
               {errors.projects[index].techStack.message}
             </p>
           )}
-
         </div>
       </div>
 
@@ -252,7 +258,6 @@ export default function ProjectItem({ index, onRemove, }: ProjectItemProps) {
           onClose={() => setIsModalOpen(false)}
         />
       )}
-
     </div>
   );
 }
